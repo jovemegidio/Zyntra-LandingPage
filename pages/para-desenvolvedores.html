@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Desenvolvedores | Zyntra</title>
+    <meta name="description" content="Portal do desenvolvedor Zyntra. Documentação da API REST, SDKs, webhooks e ferramentas para integrar seus sistemas ao ERP Zyntra de forma rápida e segura.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <link rel="icon" type="image/png" href="../Favicon - Zyntra.png">
+</head>
+<body>
+    <header class="header" id="header">
+        <div class="container header__container">
+            <a href="../index.html" class="header__logo">
+                <img src="../Zyntra - Sem Fundo.png" alt="Zyntra" class="logo-img">
+            </a>
+            <nav class="header__nav" id="nav">
+                <ul class="header__menu">
+                    <li><a href="../index.html#funcionalidades" class="header__link">Funcionalidades</a></li>
+                    <li><a href="../index.html#beneficios" class="header__link">Benefícios</a></li>
+                    <li><a href="../index.html#precos" class="header__link">Preços</a></li>
+                    <li><a href="../index.html#depoimentos" class="header__link">Depoimentos</a></li>
+                    <li><a href="../index.html#contato" class="header__link">Contato</a></li>
+                </ul>
+            </nav>
+            <div class="header__actions">
+                <a href="../login.html" class="btn btn--ghost">Entrar</a>
+                <a href="../index.html#precos" class="btn btn--primary btn--sm">Teste Grátis</a>
+            </div>
+            <button class="header__hamburger" id="hamburger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="page-content">
+        <section class="page-hero">
+            <div class="container">
+                <h1 class="page-hero__title">Para Desenvolvedores</h1>
+                <p class="page-hero__subtitle">API REST, SDKs, webhooks e documentação completa para integrar seus sistemas ao Zyntra de forma rápida e segura.</p>
+            </div>
+        </section>
+        <section class="page-body">
+            <div class="container">
+                <h2>API REST Zyntra</h2>
+                <p>A API REST do Zyntra permite que desenvolvedores integrem qualquer sistema externo à nossa plataforma. Com endpoints bem documentados e padrões modernos de desenvolvimento, você pode automatizar processos, sincronizar dados e construir soluções customizadas que se conectam ao ERP dos seus clientes.</p>
+                <p>Nossa API segue os princípios RESTful, utiliza JSON como formato de dados e autenticação via OAuth 2.0. Todas as chamadas são feitas sobre HTTPS com TLS 1.3, garantindo a segurança dos dados em trânsito.</p>
+
+                <h2>Recursos Disponíveis via API</h2>
+                <ul>
+                    <li><strong>Clientes e Fornecedores:</strong> CRUD completo de cadastros, incluindo endereços e contatos</li>
+                    <li><strong>Produtos e Serviços:</strong> Gestão de catálogo, preços, estoque e categorias</li>
+                    <li><strong>Pedidos de Venda:</strong> Criação, consulta, atualização e cancelamento de pedidos</li>
+                    <li><strong>Notas Fiscais:</strong> Emissão, consulta e cancelamento de NF-e, NFS-e e NFC-e</li>
+                    <li><strong>Financeiro:</strong> Contas a pagar, contas a receber, lançamentos e conciliação</li>
+                    <li><strong>Estoque:</strong> Movimentações, saldos, reservas e transferências entre almoxarifados</li>
+                    <li><strong>Relatórios:</strong> Geração de relatórios financeiros, comerciais e operacionais</li>
+                </ul>
+
+                <h2>SDKs e Bibliotecas</h2>
+                <p>Para facilitar a integração, oferecemos SDKs oficiais nas linguagens mais populares:</p>
+                <ul>
+                    <li><strong>Python:</strong> <code>pip install zyntra-sdk</code></li>
+                    <li><strong>Node.js:</strong> <code>npm install @zyntra/sdk</code></li>
+                    <li><strong>PHP:</strong> <code>composer require zyntra/sdk</code></li>
+                    <li><strong>C# / .NET:</strong> Disponível via NuGet: <code>Zyntra.SDK</code></li>
+                    <li><strong>Java:</strong> Disponível via Maven Central</li>
+                </ul>
+                <p>Todos os SDKs são open source e mantidos pela equipe de engenharia da Zyntra. Contribuições da comunidade são bem-vindas via GitHub.</p>
+
+                <h2>Webhooks</h2>
+                <p>Configure webhooks para receber notificações em tempo real quando eventos acontecem no Zyntra. Isso permite que seus sistemas reajam automaticamente a ações como:</p>
+                <ul>
+                    <li>Novo pedido de venda criado ou atualizado</li>
+                    <li>Nota fiscal emitida, autorizada ou cancelada</li>
+                    <li>Pagamento recebido ou estornado</li>
+                    <li>Produto com estoque abaixo do mínimo</li>
+                    <li>Novo cliente cadastrado</li>
+                    <li>Status de cobrança alterado</li>
+                </ul>
+                <p>Os webhooks são enviados via HTTP POST com payload em JSON e incluem assinatura HMAC-SHA256 para validação de autenticidade.</p>
+
+                <h2>Ambiente de Sandbox</h2>
+                <p>Disponibilizamos um ambiente de sandbox completo para que você desenvolva e teste suas integrações sem risco de afetar dados reais. O sandbox replica todas as funcionalidades da API de produção, incluindo emissão de notas fiscais em ambiente de homologação da SEFAZ.</p>
+                <p>Para criar sua conta de sandbox, acesse <strong>developers.zyntra.com.br</strong> e registre-se gratuitamente. Você receberá credenciais de API e acesso à documentação interativa com exemplos em todas as linguagens suportadas.</p>
+
+                <h2>Rate Limits e Boas Práticas</h2>
+                <ul>
+                    <li><strong>Plano Profissional:</strong> 1.000 requisições por minuto</li>
+                    <li><strong>Plano Enterprise:</strong> 5.000 requisições por minuto (customizável)</li>
+                    <li>Utilize paginação em listagens para otimizar o consumo de recursos</li>
+                    <li>Implemente cache local para dados que mudam com pouca frequência</li>
+                    <li>Utilize webhooks ao invés de polling para monitorar mudanças</li>
+                    <li>Sempre valide a assinatura dos webhooks antes de processar o payload</li>
+                </ul>
+
+                <h2>Suporte para Desenvolvedores</h2>
+                <p>Nossa equipe de Developer Relations está disponível para ajudar com dúvidas técnicas, revisão de arquitetura de integração e suporte durante o desenvolvimento. Entre em contato pelo e-mail <strong>developers@zyntra.com.br</strong> ou acesse nosso fórum de desenvolvedores em <strong>community.zyntra.com.br</strong>.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__bottom">
+                <p>&copy; 2026 Zyntra - Sistema de Gestão Empresarial. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+</body>
+</html>
