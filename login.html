@@ -566,15 +566,8 @@
 
             // Simulate login (replace with real auth)
             setTimeout(() => {
-                // For demo: show error. In production, redirect to dashboard
-                formError.classList.add('visible');
-                document.getElementById('errorText').textContent = 'E-mail ou senha incorretos. Tente novamente.';
-
-                btnLogin.classList.remove('loading');
-                btnLogin.innerHTML = `
-                    Entrar
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                `;
+                // Demo: redirecionar ao dashboard de empresas
+                window.location.href = 'Empresas/dashboard.html';
             }, 1500);
         });
 
