@@ -5,6 +5,24 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // ========== AUTH CHECK ==========
+    const loggedUser = JSON.parse(localStorage.getItem('zyntra_user'));
+    if (!loggedUser) {
+        window.location.href = '../login.html';
+        return;
+    }
+
+    // ========== SET USER INFO ==========
+    const userAvatar = document.getElementById('userAvatar');
+    const userName = document.getElementById('userName');
+    const userFullName = document.getElementById('userFullName');
+    const userEmail = document.getElementById('userEmail');
+
+    if (userAvatar) userAvatar.textContent = loggedUser.name.charAt(0).toUpperCase();
+    if (userName) userName.textContent = loggedUser.name;
+    if (userFullName) userFullName.textContent = loggedUser.fullName;
+    if (userEmail) userEmail.textContent = loggedUser.email;
+
     // ========== PROMO BANNER CAROUSEL ==========
     const promoSlides = [
         {
@@ -182,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnLogout = document.getElementById('btnLogout');
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
+            localStorage.removeItem('zyntra_user');
             showToast('Saindo da conta...');
             setTimeout(() => {
                 window.location.href = '../login.html';
@@ -194,7 +213,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnShowMore = document.getElementById('btnShowMore');
     if (btnShowMore) {
         btnShowMore.addEventListener('click', () => {
-            showToast('Nenhuma empresa adicional encontrada');
+            showToast('Todas as empresas já estão sendo exibidas');
+        });
+    }
+
+
+    // ========== NOVO TESTE GRÁTIS BUTTON ==========
+    const btnNewTest = document.getElementById('btnNewTest');
+    if (btnNewTest) {
+        btnNewTest.addEventListener('click', () => {
+            openModal('modalNewTest');
+        });
+    }
+
+
+    // ========== COMPRAR NOVO APLICATIVO BUTTON ==========
+    const btnNewApp = document.getElementById('btnNewApp');
+    if (btnNewApp) {
+        btnNewApp.addEventListener('click', () => {
+            openModal('modalNewApp');
         });
     }
 
@@ -217,51 +254,104 @@ document.addEventListener('DOMContentLoaded', () => {
     window.showToast = showToast;
 
 
-    // ========== LOAD USER DATA (simulated) ==========
-    function loadUserData() {
-        // In production, this would fetch from an API
-        const userData = {
-            name: 'Antonio Silva',
-            email: 'antonio@empresa.com.br',
-            plan: 'Profissional',
-            maxCompanies: 3,
-            companies: [
-                {
-                    id: 'aluforce',
-                    name: 'ALUFORCE',
-                    cnpj: '12.345.678/0001-01',
-                    status: 'active',
-                    plan: 'Profissional',
-                    favorite: true
-                },
-                {
-                    id: 'energy',
-                    name: 'ENERGY',
-                    cnpj: '98.765.432/0001-02',
-                    status: 'active',
-                    plan: 'Profissional',
-                    favorite: false
-                },
-                {
-                    id: 'techmais',
-                    name: 'TECHMAIS',
-                    cnpj: '55.123.789/0001-03',
-                    status: 'active',
-                    plan: 'Profissional',
-                    favorite: false
-                }
-            ]
-        };
+    // ========== LOAD USER DATA & POPULATE REAL STATS ==========
+    const companiesData = {
+        companies: [
+            {
+                id: 'aluforce',
+                name: 'ALUFORCE',
+                cnpj: '12.345.678/0001-01',
+                status: 'active',
+                plan: 'Profissional',
+                favorite: true,
+                nfeMonth: 487
+            },
+            {
+                id: 'energy',
+                name: 'ENERGY',
+                cnpj: '98.765.432/0001-02',
+                status: 'active',
+                plan: 'Profissional',
+                favorite: false,
+                nfeMonth: 312
+            },
+            {
+                id: 'labor-energy',
+                name: 'LABOR ENERGY',
+                cnpj: '55.123.789/0001-03',
+                status: 'active',
+                plan: 'Profissional',
+                favorite: false,
+                nfeMonth: 449
+            }
+        ],
+        systemUptime: 99.8
+    };
 
-        // Update company count
-        if (companyCount) {
-            companyCount.textContent = userData.companies.length;
+    function populateStats() {
+        const companies = companiesData.companies;
+        const activeCompanies = companies.filter(c => c.status === 'active').length;
+        const totalNfe = companies.reduce((sum, c) => sum + (c.nfeMonth || 0), 0);
+
+        // Determine plan (use highest plan across companies)
+        const planPriority = { 'Starter': 1, 'Profissional': 2, 'Enterprise': 3 };
+        let bestPlan = 'Starter';
+        companies.forEach(c => {
+            if ((planPriority[c.plan] || 0) > (planPriority[bestPlan] || 0)) {
+                bestPlan = c.plan;
+            }
+        });
+
+        // Animated counter effect
+        function animateValue(el, start, end, duration, suffix) {
+            suffix = suffix || '';
+            if (typeof end === 'string') {
+                el.textContent = end;
+                return;
+            }
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // easeOutQuart
+                const eased = 1 - Math.pow(1 - progress, 4);
+                const current = Math.round(start + (end - start) * eased);
+                el.textContent = current.toLocaleString('pt-BR') + suffix;
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            requestAnimationFrame(update);
         }
 
-        return userData;
+        const statActive = document.getElementById('statActiveCompanies');
+        const statPlan = document.getElementById('statCurrentPlan');
+        const statNfe = document.getElementById('statNfeCount');
+        const statUptime = document.getElementById('statUptime');
+
+        if (statActive) animateValue(statActive, 0, activeCompanies, 600);
+        if (statPlan) statPlan.textContent = bestPlan;
+        if (statNfe) animateValue(statNfe, 0, totalNfe, 900);
+        if (statUptime) {
+            statUptime.textContent = companiesData.systemUptime.toLocaleString('pt-BR', { minimumFractionDigits: 1 }) + '%';
+        }
+
+        // Update company count in toolbar
+        if (companyCount) companyCount.textContent = activeCompanies;
     }
 
-    loadUserData();
+    populateStats();
+
+
+    // ========== SHOW MORE: only visible with 5+ companies ==========
+    const showMoreContainer = document.getElementById('showMoreContainer');
+    function updateShowMore() {
+        const totalCompanies = companyGrid.querySelectorAll('.company-card').length;
+        if (showMoreContainer) {
+            showMoreContainer.style.display = totalCompanies >= 5 ? '' : 'none';
+        }
+    }
+    updateShowMore();
 
 });
 
@@ -269,6 +359,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========== GLOBAL: ACCESS COMPANY ERP ==========
 function acessarEmpresa(companyId) {
     const btn = event.target.closest('.company-card__btn');
+
+    // Company routes mapping
+    const companyRoutes = {
+        'aluforce': 'aluforce/painel.html',
+        'energy': 'energy/painel.html',
+        'labor-energy': 'labor-energy/painel.html'
+    };
 
     // Loading state
     if (btn) {
@@ -283,16 +380,134 @@ function acessarEmpresa(companyId) {
 
     window.showToast(`Acessando ERP da empresa ${companyId.toUpperCase()}...`);
 
-    // Simulate redirect to ERP
+    // Redirect to company control panel
     setTimeout(() => {
-        // In production: window.location.href = `/erp/${companyId}`;
-        if (btn) {
-            btn.innerHTML = `
-                Acessar
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            `;
-            btn.style.pointerEvents = '';
+        const route = companyRoutes[companyId];
+        if (route) {
+            window.location.href = route;
+        } else {
+            if (btn) {
+                btn.innerHTML = `
+                    Acessar
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                `;
+                btn.style.pointerEvents = '';
+            }
+            window.showToast('❌ Empresa não encontrada');
         }
-        window.showToast(`✅ Conectado ao ERP: ${companyId.toUpperCase()}`);
+    }, 1500);
+}
+
+
+// ========== GLOBAL: MODAL FUNCTIONS ==========
+function openModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        // Close on overlay click
+        modal.addEventListener('click', function handler(e) {
+            if (e.target === modal) {
+                closeModal(id);
+                modal.removeEventListener('click', handler);
+            }
+        });
+    }
+}
+
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+}
+
+// Close modals on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => {
+            m.classList.remove('open');
+        });
+        document.body.style.overflow = '';
+    }
+});
+
+
+// ========== GLOBAL: CRIAR TESTE ==========
+function criarTeste() {
+    const name = document.getElementById('testCompanyName')?.value.trim();
+    const segment = document.getElementById('testSegment')?.value;
+
+    if (!name) {
+        window.showToast('⚠️ Informe o nome da empresa');
+        return;
+    }
+    if (!segment) {
+        window.showToast('⚠️ Selecione o segmento');
+        return;
+    }
+
+    closeModal('modalNewTest');
+    window.showToast(`🧪 Criando ambiente de teste para "${name}"...`);
+
+    setTimeout(() => {
+        window.showToast(`✅ Teste criado com sucesso! Expira em 14 dias.`);
     }, 2000);
 }
+
+
+// ========== GLOBAL: COMPRAR APLICATIVO ==========
+function comprarAplicativo() {
+    const name = document.getElementById('newAppCompanyName')?.value.trim();
+    const cnpj = document.getElementById('newAppCnpj')?.value.trim();
+    const plan = document.getElementById('newAppPlan')?.value;
+
+    if (!name) {
+        window.showToast('⚠️ Informe a Razão Social');
+        return;
+    }
+    if (!cnpj || cnpj.length < 14) {
+        window.showToast('⚠️ Informe um CNPJ válido');
+        return;
+    }
+
+    closeModal('modalNewApp');
+
+    const planNames = {
+        'starter': 'Starter',
+        'profissional': 'Profissional',
+        'enterprise': 'Enterprise'
+    };
+
+    window.showToast(`🛒 Processando compra do plano ${planNames[plan]} para "${name}"...`);
+
+    setTimeout(() => {
+        window.showToast(`✅ Aplicativo adquirido com sucesso!`);
+    }, 2500);
+}
+
+
+// ========== CNPJ MASK ==========
+document.addEventListener('DOMContentLoaded', () => {
+    const cnpjInput = document.getElementById('newAppCnpj');
+    if (cnpjInput) {
+        cnpjInput.addEventListener('input', (e) => {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 14) v = v.slice(0, 14);
+
+            if (v.length > 12) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+            } else if (v.length > 8) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
+            } else if (v.length > 5) {
+                v = v.replace(/^(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
+            } else if (v.length > 2) {
+                v = v.replace(/^(\d{2})(\d{1,3})/, '$1.$2');
+            }
+
+            e.target.value = v;
+        });
+    }
+});
