@@ -825,12 +825,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         await new Promise(r => setTimeout(r, 100));
 
-        // Preload
-        try {
-          const linkCSS = document.createElement('link'); linkCSS.rel = 'prefetch'; linkCSS.href = '/css/skeleton-loader.css'; document.head.appendChild(linkCSS);
-          const linkJS = document.createElement('link'); linkJS.rel = 'prefetch'; linkJS.href = '/js/performance-utils.js'; document.head.appendChild(linkJS);
-        } catch(e) {}
-
         try {
           const meResp = await apiFetch('/api/me', { credentials: 'include' });
           if (meResp.ok) {
