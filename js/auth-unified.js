@@ -48,15 +48,25 @@
 (function() {
     'use strict';
     
-    console.log('🔐 Sistema de Autenticação Unificado ALUFORCE v7.2 (Tab-Isolated + Server Validation)');
+    // Detecta ambiente estático (Live Server, file://, etc)
+    const isStaticEnv = (
+        window.location.protocol === 'file:' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname === 'localhost' ||
+        window.location.port === '5500' ||
+        window.location.port === '5501' ||
+        window.location.port === '3000'
+    );
+    
+    console.log(`🔐 Sistema de Autenticação Unificado Zyntra v7.3 (${isStaticEnv ? 'Static/Demo' : 'Production'})`);
     
     // Configurações
     const AUTH_CONFIG = {
-        loginUrl: '/login.html',
+        loginUrl: isStaticEnv ? '../login.html' : '/login.html',
         apiMeEndpoint: '/api/me',
-        dashboardUrl: '/index.html',
+        dashboardUrl: isStaticEnv ? '../Empresas/dashboard.html' : '/index.html',
         timeout: 5000,
-        debug: true
+        debug: !isStaticEnv // Desliga logs verbosos no modo estático
     };
     
     // Flag para evitar múltiplos redirecionamentos
@@ -154,7 +164,7 @@
             'chatUser','supportTickets','chatVoiceEnabled',
             'currentUser', 'loggedUser', 'userInfo', 'userProfile',
             'rememberToken', 'sessionUser', 'lastUser',
-            'userEmail', 'userRole'
+            'userEmail', 'userRole', 'zyntra_user'
         ];
         
         try { 
@@ -322,62 +332,66 @@
         return getTabUserData();
     }
     
-    // Função principal de verificação (v6.0 - sessionStorage primeiro)
+    // Função principal de verificação (v7.3 - suporte a ambiente estático)
     async function verifyAuth() {
         if (shouldSkipAuth()) {
             debugLog('⏭️ Pulando verificação de autenticação');
             return;
         }
         
-        debugLog('🚀 Iniciando verificação de autenticação v6.0...');
+        debugLog('🚀 Iniciando verificação de autenticação...');
         
-        // 1. PRIMEIRO: Verificar se tem dados válidos nesta aba (sessionStorage)
-        const localUser = getTabUserData();
-        if (localUser) {
-            debugLog('✅ Usuário encontrado nesta aba:', localUser.email);
-            debugLog('🎉 Autenticação confirmada via sessionStorage!');
-            
-            // Disparar evento de sucesso
-            window.dispatchEvent(new CustomEvent('authSuccess', { 
-                detail: { user: localUser, source: 'sessionStorage' } 
-            }));
-            
-            // Mostrar a página
-            document.body?.classList?.remove('auth-loading');
-            
-            // Verificar servidor em background (usando token DESTA aba)
-            checkAuthentication().then(serverUser => {
-                if (serverUser) {
-                    setTabUserData(serverUser);
-                    debugLog('🔄 Dados atualizados do servidor');
-                } else {
-                    debugLog('⚠️ Sessão expirada no servidor - redirecionando para login');
-                    clearAuthData();
-                    redirectToLogin('Sessão expirada no servidor');
+        // === MODO ESTÁTICO: usar zyntra_user do localStorage ===
+        if (isStaticEnv) {
+            try {
+                const zyntraUser = localStorage.getItem('zyntra_user');
+                if (zyntraUser) {
+                    const user = JSON.parse(zyntraUser);
+                    if (user && user.email) {
+                        debugLog('✅ Usuário local encontrado: ' + user.name);
+                        document.body?.classList?.remove('auth-loading');
+                        window.dispatchEvent(new CustomEvent('authSuccess', { 
+                            detail: { user, source: 'zyntra_user' } 
+                        }));
+                        return;
+                    }
                 }
-            }).catch(() => {
-                debugLog('⚠️ Não foi possível verificar servidor (offline?)');
-            });
-            
+            } catch (e) {}
+            debugLog('❌ Sem sessão local - redirecionando para login');
+            redirectToLogin('Faça login para continuar');
             return;
         }
         
-        // 2. SEGUNDO: Se não tem dados nesta aba, tentar validar sessão via cookie no servidor
-        // v7.2 FIX: Antes de forçar re-login, verificar se o servidor reconhece a sessão via cookie.
-        // Isso permite abrir novas abas/links sem precisar re-logar, enquanto mantém
-        // a segurança — apenas o servidor decide se o cookie é válido.
-        debugLog('🔍 Nenhum token nesta aba - verificando sessão via cookie no servidor...');
+        // === MODO PRODUÇÃO: sessionStorage + API ===
+        // 1. Verificar se tem dados válidos nesta aba (sessionStorage)
+        const localUser = getTabUserData();
+        if (localUser) {
+            debugLog('✅ Usuário encontrado nesta aba:', localUser.email);
+            window.dispatchEvent(new CustomEvent('authSuccess', { 
+                detail: { user: localUser, source: 'sessionStorage' } 
+            }));
+            document.body?.classList?.remove('auth-loading');
+            
+            // Verificar servidor em background
+            checkAuthentication().then(serverUser => {
+                if (serverUser) {
+                    setTabUserData(serverUser);
+                } else {
+                    clearAuthData();
+                    redirectToLogin('Sessão expirada no servidor');
+                }
+            }).catch(() => {});
+            return;
+        }
         
+        // 2. Tentar validar sessão via cookie no servidor
+        debugLog('🔍 Nenhum token nesta aba - verificando sessão via cookie...');
         try {
             const serverUser = await checkAuthentication();
             if (serverUser) {
-                debugLog('✅ Sessão válida confirmada pelo servidor - salvando nesta aba');
+                debugLog('✅ Sessão válida confirmada pelo servidor');
                 setTabUserData(serverUser);
-                
-                // Mostrar a página
                 document.body?.classList?.remove('auth-loading');
-                
-                // Disparar evento de sucesso
                 window.dispatchEvent(new CustomEvent('authSuccess', { 
                     detail: { user: serverUser, source: 'server-cookie' } 
                 }));
@@ -387,8 +401,6 @@
             debugLog('⚠️ Erro ao verificar sessão no servidor:', e.message);
         }
         
-        // Servidor não reconheceu a sessão — agora sim, redirecionar para login
-        debugLog('❌ Sessão não válida no servidor - redirecionando para login');
         redirectToLogin('Nova sessão - faça login');
     }
     
@@ -402,50 +414,59 @@
             verifyAuth();
         }
         
-        // Verificação periódica a cada 15 minutos
-        setInterval(async () => {
-            if (!shouldSkipAuth() && !isRedirecting) {
-                debugLog('🔄 Verificação periódica...');
-                const tabUser = getTabUserData();
-                if (!tabUser) {
-                    const serverUser = await checkAuthentication();
-                    if (!serverUser) {
-                        redirectToLogin('Sessão expirada');
-                    }
-                } else {
-                    // Verificar se a sessão ainda é válida no servidor
-                    const serverUser = await checkAuthentication();
-                    if (!serverUser) {
-                        debugLog('⚠️ Sessão expirada no servidor durante check periódico');
-                        clearAuthData();
-                        redirectToLogin('Sessão expirada');
+        // Verificação periódica a cada 15 minutos (apenas em produção)
+        if (!isStaticEnv) {
+            setInterval(async () => {
+                if (!shouldSkipAuth() && !isRedirecting) {
+                    debugLog('🔄 Verificação periódica...');
+                    const tabUser = getTabUserData();
+                    if (!tabUser) {
+                        const serverUser = await checkAuthentication();
+                        if (!serverUser) {
+                            redirectToLogin('Sessão expirada');
+                        }
+                    } else {
+                        const serverUser = await checkAuthentication();
+                        if (!serverUser) {
+                            clearAuthData();
+                            redirectToLogin('Sessão expirada');
+                        }
                     }
                 }
-            }
-        }, 15 * 60 * 1000);
+            }, 15 * 60 * 1000);
+        }
     }
     
     // Expor funções para os módulos
     window.AluforceAuth = {
-        checkAuth: checkAuthentication,
-        clearAuth: clearAuthData,
+        checkAuth: isStaticEnv ? async () => JSON.parse(localStorage.getItem('zyntra_user') || 'null') : checkAuthentication,
+        clearAuth: () => {
+            clearAuthData();
+            try { localStorage.removeItem('zyntra_user'); } catch(e) {}
+        },
         getCookie: getCookie,
         getDeviceId: getDeviceId,
-        getTabToken: getTabToken, // 🔐 v6.0: Expor token da aba
+        getTabToken: getTabToken,
+        isStaticEnv: isStaticEnv,
         isAuthenticated: async () => {
+            if (isStaticEnv) return !!localStorage.getItem('zyntra_user');
             const tabUser = getTabUserData();
             if (tabUser) return true;
             const userData = await checkAuthentication();
             return !!userData;
         },
         getUserData: async () => {
+            if (isStaticEnv) {
+                try { return JSON.parse(localStorage.getItem('zyntra_user')); } catch(e) { return null; }
+            }
             const tabUser = getTabUserData();
             if (tabUser) return tabUser;
             return await checkAuthentication();
         },
-        getLocalUserData: getLocalUserData,
+        getLocalUserData: isStaticEnv ? () => { try { return JSON.parse(localStorage.getItem('zyntra_user')); } catch(e) { return null; } } : getLocalUserData,
         logout: () => {
             clearAuthData();
+            try { localStorage.removeItem('zyntra_user'); } catch(e) {}
             window.location.href = AUTH_CONFIG.loginUrl;
         }
     };
@@ -453,6 +474,6 @@
     // Inicializar
     initAuth();
     
-    debugLog('✅ Sistema de autenticação v7.2 (Tab-Isolated + Server Validation) inicializado');
+    debugLog('✅ Sistema de autenticação v7.3 inicializado');
     
 })();

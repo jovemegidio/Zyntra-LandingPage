@@ -20,6 +20,49 @@ document.addEventListener('DOMContentLoaded', () => {
   const eyeOpen = document.getElementById('eye-open');
   const eyeOff = document.getElementById('eye-off');
 
+  // ==================== ENVIRONMENT DETECTION ====================
+  // Detecta se está rodando em ambiente estático (Live Server, file://, etc)
+  const isStaticEnv = (
+    window.location.protocol === 'file:' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === 'localhost' ||
+    window.location.port === '5500' ||
+    window.location.port === '5501' ||
+    window.location.port === '3000'
+  );
+
+  // ==================== LOCAL CREDENTIALS (static/demo mode) ====================
+  const LOCAL_USERS = {
+    'ti@aluforce.ind.br':           { password: 'alu0103', name: 'TI',        fullName: 'Tecnologia da Informação', role: 'admin' },
+    'admin@aluforce.ind.br':        { password: 'alu0103', name: 'Admin',     fullName: 'Administrador do Sistema', role: 'admin' },
+    'douglas@aluforce.ind.br':      { password: 'alu0103', name: 'Douglas',   fullName: 'Douglas Silva',            role: 'user' },
+    'andreia@aluforce.ind.br':      { password: 'alu0103', name: 'Andreia',   fullName: 'Andreia Santos',           role: 'user' },
+    'guilherme@aluforce.ind.br':    { password: 'alu0103', name: 'Guilherme', fullName: 'Guilherme Oliveira',       role: 'user' },
+    'thiago@aluforce.ind.br':       { password: 'alu0103', name: 'Thiago',    fullName: 'Thiago Scarcella',         role: 'user' },
+    'clemerson@aluforce.ind.br':    { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',          role: 'user' },
+    'rh@aluforce.ind.br':           { password: 'alu0103', name: 'RH',        fullName: 'Recursos Humanos',         role: 'user' },
+    'demo@zyntra.com':              { password: 'demo123', name: 'Demo',      fullName: 'Usuário Demonstração',     role: 'admin' },
+  };
+
+  // Autenticação local (retorna user data ou null)
+  function localAuth(email, password) {
+    const emailLower = email.toLowerCase();
+    const user = LOCAL_USERS[emailLower];
+    if (!user) return null;
+    if (user.password !== password) return null;
+    return {
+      id: emailLower.replace(/[^a-z0-9]/g, '_'),
+      email: emailLower,
+      name: user.name,
+      fullName: user.fullName,
+      role: user.role,
+    };
+  }
+
+  if (isStaticEnv) {
+    console.log('[LOGIN] 🏠 Ambiente estático detectado — autenticação local ativa');
+  }
+
   // ==================== MOUNT ANIMATION ====================
   requestAnimationFrame(() => {
     setTimeout(() => {
@@ -98,7 +141,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Limpeza preventiva ao abrir a tela de login
-  try { if (window.AluforceAuth && typeof AluforceAuth.clearAuth === 'function') AluforceAuth.clearAuth(); } catch {}
+  // No modo estático, preservar zyntra_user para o "lembrar-me" funcionar
+  if (isStaticEnv) {
+    const savedUser = localStorage.getItem('zyntra_user');
+    try { if (window.AluforceAuth && typeof AluforceAuth.clearAuth === 'function') AluforceAuth.clearAuth(); } catch {}
+    if (savedUser) {
+      try { localStorage.setItem('zyntra_user', savedUser); } catch {}
+    }
+  } else {
+    try { if (window.AluforceAuth && typeof AluforceAuth.clearAuth === 'function') AluforceAuth.clearAuth(); } catch {}
+  }
   try { ['chatSupportUser','chatSupportConversations','chatSupportTickets','chatUser','supportTickets','chatVoiceEnabled'].forEach(k => localStorage.removeItem(k)); } catch {}
 
   if (!loginForm) return;
@@ -171,6 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   async function fetchUserPhotoFromAPI(email) {
+    // Em ambiente estático, não chamar API
+    if (isStaticEnv) return null;
     try {
       const response = await fetch(`/api/usuarios/foto/${encodeURIComponent(email)}`);
       if (!response.ok) return null;
@@ -271,16 +325,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Fallback: local avatars
-    const dominiosPermitidos = ['aluforce', 'lumiereassesoria', 'lumiereassessoria'];
+    // Fallback: avatar por iniciais ou ícone genérico
+    const dominiosPermitidos = ['aluforce', 'lumiereassesoria', 'lumiereassessoria', 'zyntra'];
     const domainMatch = emailParts[1] && dominiosPermitidos.some(d => emailParts[1].includes(d));
 
     if (domainMatch) {
-      const avatarPath = getUserAvatar(firstName, fullUsername);
-      if (avatarPath) {
-        setAvatarImage(avatarPath, firstName, emailParts[1]);
-      } else {
+      if (isStaticEnv) {
+        // Em ambiente estático, usar iniciais diretamente (sem tentar carregar imagens)
         setAvatarInitials(firstName);
+      } else {
+        const avatarPath = getUserAvatar(firstName, fullUsername);
+        if (avatarPath) {
+          setAvatarImage(avatarPath, firstName, emailParts[1]);
+        } else {
+          setAvatarInitials(firstName);
+        }
       }
     } else {
       setAvatarUser();
@@ -431,6 +490,20 @@ document.addEventListener('DOMContentLoaded', () => {
     nextStep1.disabled = true;
     const originalHTML = nextStep1.innerHTML;
     nextStep1.innerHTML = '<svg class="spinner-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Enviando...';
+
+    if (isStaticEnv) {
+      // Em ambiente estático, simular envio
+      await new Promise(r => setTimeout(r, 1000));
+      const localUser = LOCAL_USERS[email.toLowerCase()];
+      if (localUser) {
+        showModalMessage('✅ No ambiente de demonstração, a senha padrão é: alu0103', 'success');
+      } else {
+        showModalMessage('Email não encontrado no sistema de demonstração.', 'error');
+      }
+      nextStep1.disabled = false;
+      nextStep1.innerHTML = originalHTML;
+      return;
+    }
 
     try {
       const response = await apiFetch('/api/auth/forgot-password', {
@@ -612,6 +685,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const rememberCheckbox = document.getElementById('remember-me');
 
   async function checkRememberToken() {
+    // Em ambiente estático, verificar se já tem sessão local ativa
+    if (isStaticEnv) {
+      const existingUser = localStorage.getItem('zyntra_user');
+      if (existingUser) {
+        try {
+          const user = JSON.parse(existingUser);
+          if (user && user.name) {
+            showRememberBanner(user.fullName || user.name, user.email);
+          }
+        } catch (e) {}
+      }
+      return;
+    }
     try {
       const urlParams = new URLSearchParams(window.location.search);
       if (urlParams.has('logout') || urlParams.has('switch') || urlParams.has('force')) {
@@ -656,16 +742,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(banner);
 
     document.getElementById('remember-continue').addEventListener('click', () => {
-      window.location.href = '/dashboard';
+      window.location.href = isStaticEnv ? 'Empresas/dashboard.html' : '/dashboard';
     });
 
     document.getElementById('remember-switch').addEventListener('click', async () => {
       banner.remove();
-      try {
-        await fetch('/api/auth/remove-remember-token', { method: 'POST', credentials: 'include' });
-        await fetch('/api/logout', { method: 'POST', credentials: 'include' });
-      } catch (e) {}
-      ['token', 'authToken', 'userData', 'user', 'userName', 'userEmail', 'userRole', 'deviceId'].forEach(k => localStorage.removeItem(k));
+      if (!isStaticEnv) {
+        try {
+          await fetch('/api/auth/remove-remember-token', { method: 'POST', credentials: 'include' });
+          await fetch('/api/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) {}
+      }
+      ['token', 'authToken', 'userData', 'user', 'userName', 'userEmail', 'userRole', 'deviceId', 'zyntra_user'].forEach(k => localStorage.removeItem(k));
       sessionStorage.clear();
       if (emailInput) emailInput.focus();
     });
@@ -675,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (rememberCheckbox) {
     rememberCheckbox.addEventListener('change', async () => {
-      if (!rememberCheckbox.checked) {
+      if (!rememberCheckbox.checked && !isStaticEnv) {
         try {
           await apiFetch('/api/auth/remove-remember-token', { method: 'POST', credentials: 'include' });
         } catch (error) {}
@@ -738,80 +826,71 @@ document.addEventListener('DOMContentLoaded', () => {
         ['token', 'authToken', 'userData', 'user', 'user_data', 'userName',
          'chatSupportUser', 'chatSupportConversations', 'chatSupportTickets',
          'chatUser', 'supportTickets', 'chatVoiceEnabled', 'preferred_background',
-         'currentUser', 'loggedUser', 'userInfo', 'userProfile', 'deviceId', 'sessionId'
+         'currentUser', 'loggedUser', 'userInfo', 'userProfile', 'deviceId', 'sessionId',
+         'zyntra_user'
         ].forEach(k => localStorage.removeItem(k));
         sessionStorage.clear();
       } catch (e) {}
 
-      try {
-        await fetch('/api/auth/remove-remember-token', { method: 'POST', credentials: 'include' });
-      } catch (e) {}
-
+      if (!isStaticEnv) {
+        try { await fetch('/api/auth/remove-remember-token', { method: 'POST', credentials: 'include' }); } catch (e) {}
+      }
       try { if (window.AluforceAuth && typeof AluforceAuth.clearAuth === 'function') AluforceAuth.clearAuth(); } catch {}
 
-      // API LOGIN CALL
-      const response = await apiFetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ email: username, password })
-      });
+      // ====== AUTENTICAÇÃO ======
+      let authenticatedUser = null;
 
-      let data = {};
-      try { data = await response.json(); } catch (e) { data = {}; }
-
-      if (!response.ok) {
-        if (data && data.code === 'ACCOUNT_TERMINATED') {
-          showTerminatedAccountModal(data.message || 'Seu vínculo com a empresa foi encerrado.');
-          setLoading(false);
-          return;
+      if (isStaticEnv) {
+        // --- MODO LOCAL (Live Server / demo) ---
+        console.log('[LOGIN] 🏠 Autenticando localmente...');
+        authenticatedUser = localAuth(username, password);
+        if (!authenticatedUser) {
+          throw new Error('Email ou senha incorretos.');
         }
-        const msg = (data && data.message) ? data.message : `Erro de autenticação (${response.status})`;
-        throw new Error(msg);
-      }
+      } else {
+        // --- MODO PRODUÇÃO (API backend) ---
+        const response = await apiFetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: username, password })
+        });
 
-      // Cleanup and save fresh data
-      try {
-        ['token', 'authToken', 'userData', 'user', 'user_data', 'userName',
-         'chatSupportUser', 'chatSupportConversations', 'chatSupportTickets',
-         'chatUser', 'supportTickets', 'chatVoiceEnabled', 'preferred_background',
-         'currentUser', 'loggedUser', 'deviceId', 'sessionId'
-        ].forEach(k => localStorage.removeItem(k));
-        sessionStorage.clear();
-      } catch (e) {}
+        let data = {};
+        try { data = await response.json(); } catch (e) { data = {}; }
 
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
-        localStorage.setItem('token', data.token);
-        sessionStorage.setItem('tabAuthToken', data.token);
-      }
+        if (!response.ok) {
+          if (data && data.code === 'ACCOUNT_TERMINATED') {
+            showTerminatedAccountModal(data.message || 'Seu vínculo com a empresa foi encerrado.');
+            setLoading(false);
+            return;
+          }
+          const msg = (data && data.message) ? data.message : `Erro de autenticação (${response.status})`;
+          throw new Error(msg);
+        }
 
-      if (data.deviceId) {
-        sessionStorage.setItem('deviceId', data.deviceId);
-      }
+        // Save API tokens
+        if (data.token) {
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('token', data.token);
+          sessionStorage.setItem('tabAuthToken', data.token);
+        }
+        if (data.deviceId) sessionStorage.setItem('deviceId', data.deviceId);
 
-      if (data.user) {
-        const userDataJson = JSON.stringify(data.user);
-        localStorage.setItem('userData', userDataJson);
-        sessionStorage.setItem('tabUserData', userDataJson);
-        localStorage.setItem('userEmail', data.user.email || '');
-        localStorage.setItem('userRole', data.user.role || '');
-        localStorage.setItem('userName', data.user.nome || data.user.name || '');
-      }
+        if (data.user) {
+          authenticatedUser = {
+            id: data.user.id || data.user.email,
+            email: data.user.email,
+            name: data.user.nome || data.user.name || data.user.email.split('@')[0],
+            fullName: data.user.nomeCompleto || data.user.nome || data.user.name || '',
+            role: data.user.role || 'user',
+          };
+          const userDataJson = JSON.stringify(data.user);
+          localStorage.setItem('userData', userDataJson);
+          sessionStorage.setItem('tabUserData', userDataJson);
+        }
 
-      // Show success state
-      setSuccess();
-
-      // Handle redirect
-      if (data && data.redirectTo) {
-        let redirectTo = data.redirectTo;
-        try {
-          const parsed = new URL(redirectTo, window.location.origin);
-          redirectTo = parsed.pathname + parsed.search + parsed.hash;
-        } catch (e) {}
-        if (redirectTo === '/index.html' || redirectTo === '/index.html/') redirectTo = '/dashboard';
-
-        // Remember me token
+        // Remember me
         if (rememberCheckbox && rememberCheckbox.checked && data.user) {
           try {
             await apiFetch('/api/auth/create-remember-token', {
@@ -822,66 +901,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
           } catch (e) {}
         }
+      }
 
-        await new Promise(r => setTimeout(r, 100));
+      if (!authenticatedUser) {
+        throw new Error('Falha na autenticação.');
+      }
 
-        try {
-          const meResp = await apiFetch('/api/me', { credentials: 'include' });
-          if (meResp.ok) {
-            const userData = await meResp.json();
-            const freshJson = JSON.stringify(userData);
-            localStorage.setItem('userData', freshJson);
-            sessionStorage.setItem('tabUserData', freshJson);
+      // Salvar no formato que o dashboard espera (zyntra_user)
+      localStorage.setItem('zyntra_user', JSON.stringify(authenticatedUser));
+      console.log('[LOGIN] ✅ Usuário autenticado:', authenticatedUser.name);
 
-            let finalRedirect = redirectTo;
-            if (returnTo) {
-              const decodedReturn = decodeURIComponent(returnTo);
-              if (decodedReturn.startsWith('/') && !decodedReturn.startsWith('//')) {
-                finalRedirect = decodedReturn;
-              }
-            }
-            window.location.href = finalRedirect;
-            return;
-          } else {
-            throw new Error('Sessão não confirmada.');
-          }
-        } catch (e) {
-          throw new Error('Falha ao verificar sessão: ' + e.message);
+      // Show success state
+      setSuccess();
+      await new Promise(r => setTimeout(r, 600));
+
+      // Redirect
+      let finalRedirect = isStaticEnv ? 'Empresas/dashboard.html' : '/dashboard';
+      if (returnTo) {
+        const decodedReturn = decodeURIComponent(returnTo);
+        if (decodedReturn.startsWith('/') && !decodedReturn.startsWith('//')) {
+          finalRedirect = isStaticEnv ? 'Empresas/dashboard.html' : decodedReturn;
         }
       }
-
-      // No redirect suggested - verify session
-      if (rememberCheckbox && rememberCheckbox.checked && data.user) {
-        try {
-          await apiFetch('/api/auth/create-remember-token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ userId: data.user.id, email: data.user.email })
-          });
-        } catch (e) {}
-      }
-
-      try {
-        const meResp = await apiFetch('/api/me', { credentials: 'include' });
-        if (meResp.ok) {
-          const userData = await meResp.json();
-          const freshJson = JSON.stringify(userData);
-          localStorage.setItem('userData', freshJson);
-          sessionStorage.setItem('tabUserData', freshJson);
-
-          let finalRedirect = '/dashboard';
-          if (returnTo) {
-            const decodedReturn = decodeURIComponent(returnTo);
-            if (decodedReturn.startsWith('/') && !decodedReturn.startsWith('//')) finalRedirect = decodedReturn;
-          }
-          window.location.href = finalRedirect;
-        } else {
-          throw new Error('Falha ao autenticar sessão.');
-        }
-      } catch (e) {
-        throw new Error('Falha ao autenticar sessão. Tente novamente.');
-      }
+      window.location.href = finalRedirect;
     } catch (error) {
       submitBtn?.classList.remove('success');
       const msg = error && error.message ? error.message : 'Erro ao efetuar login';
