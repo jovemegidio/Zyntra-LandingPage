@@ -376,10 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'resumo':
                     showToast(`📊 Abrindo resumo de ${companyName}...`);
                     setTimeout(() => {
-                        if (companyId) {
-                            window.location.href = `${companyId}/painel.html`;
-                        }
-                    }, 1000);
+                        window.location.href = `resumo-app.html?empresa=${companyId}`;
+                    }, 800);
                     break;
 
                 case 'extrato':
@@ -398,14 +396,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 case 'groups':
                     showToast(`🔐 Abrindo grupos de acesso de ${companyName}...`);
+                    setTimeout(() => {
+                        window.location.href = `grupos-de-acesso.html?empresa=${companyId}`;
+                    }, 800);
                     break;
 
                 case 'security':
                     showToast(`🛡️ Abrindo configurações de segurança de ${companyName}...`);
+                    setTimeout(() => {
+                        window.location.href = `seguranca.html?empresa=${companyId}`;
+                    }, 800);
                     break;
 
                 case 'terms':
                     showToast(`📋 Abrindo termos de contrato de ${companyName}...`);
+                    setTimeout(() => {
+                        window.location.href = `termos-de-contrato.html?empresa=${companyId}`;
+                    }, 800);
                     break;
 
                 default:
@@ -672,53 +679,147 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-// ========== GLOBAL: CRIAR TESTE ==========
+// ========== GLOBAL: CRIAR TESTE (Redesigned Trial Modal) ==========
 function criarTeste() {
     const name = document.getElementById('testCompanyName')?.value.trim();
-    const segment = document.getElementById('testSegment')?.value;
+    const doc = document.getElementById('testDocument')?.value.trim();
+    const reason = document.getElementById('testReason')?.value;
+    const accepted = document.getElementById('testAcceptTerms')?.checked;
 
-    if (!name) {
-        window.showToast('⚠️ Informe o nome da empresa');
-        return;
-    }
-    if (!segment) {
-        window.showToast('⚠️ Selecione o segmento');
-        return;
-    }
+    if (!name) { window.showToast('⚠️ Informe o nome da empresa'); return; }
+    if (!doc || doc.length < 11) { window.showToast('⚠️ Informe um CNPJ ou CPF válido'); return; }
+    if (!reason) { window.showToast('⚠️ Selecione o motivo da contratação'); return; }
+    if (!accepted) { window.showToast('⚠️ Você precisa aceitar os Termos de Contrato'); return; }
 
     closeModal('modalNewTest');
     window.showToast(`🧪 Criando ambiente de teste para "${name}"...`);
 
     setTimeout(() => {
-        window.showToast(`✅ Teste criado com sucesso! Expira em 14 dias.`);
+        window.showToast(`✅ Teste criado com sucesso! Expira em 7 dias.`);
     }, 2000);
 }
 
 
-// ========== GLOBAL: COMPRAR APLICATIVO ==========
-function comprarAplicativo() {
-    const name = document.getElementById('newAppCompanyName')?.value.trim();
-    const cnpj = document.getElementById('newAppCnpj')?.value.trim();
-    const plan = document.getElementById('newAppPlan')?.value;
+// ========== GLOBAL: PURCHASE MULTI-STEP ==========
 
-    if (!name) {
-        window.showToast('⚠️ Informe a Razão Social');
-        return;
+// Pricing table by revenue
+const pricingTable = {
+    '81000':   { erp: 119,  multi: 249 },
+    '180000':  { erp: 309,  multi: 459 },
+    '360000':  { erp: 509,  multi: 659 },
+    '720000':  { erp: 709,  multi: 859 },
+    '1800000': { erp: 949,  multi: 1099 },
+    '4800000': { erp: 949,  multi: 1099 },
+    'above':   { erp: 0,    multi: 0 }
+};
+
+const revenueLabels = {
+    '81000': 'Até R$ 81.000,00',
+    '180000': 'Até R$ 180.000,00',
+    '360000': 'Até R$ 360.000,00',
+    '720000': 'Até R$ 720.000,00',
+    '1800000': 'Até R$ 1.800.000,00',
+    '4800000': 'Até R$ 4.800.000,00',
+    'above': 'A partir de R$ 4.800.000,00'
+};
+
+let selectedPlan = 'erp';
+
+function updatePricing() {
+    const revenue = document.getElementById('revenueSelect')?.value || '81000';
+    const prices = pricingTable[revenue];
+    const isAbove = revenue === 'above';
+
+    const planErpPrice = document.getElementById('planErpPrice');
+    const planMultiPrice = document.getElementById('planMultiPrice');
+    const purchasePlans = document.getElementById('purchasePlans');
+    const contactForm = document.getElementById('contactFormHighRevenue');
+    const purchaseSummary = document.getElementById('purchaseSummary');
+    const btnNext = document.getElementById('btnPurchaseNext');
+
+    if (isAbove) {
+        // Show contact form, hide plan cards and summary
+        if (purchasePlans) purchasePlans.style.display = 'none';
+        if (contactForm) contactForm.style.display = '';
+        if (purchaseSummary) purchaseSummary.style.display = 'none';
+        if (btnNext) btnNext.style.display = 'none';
+    } else {
+        if (purchasePlans) purchasePlans.style.display = '';
+        if (contactForm) contactForm.style.display = 'none';
+        if (purchaseSummary) purchaseSummary.style.display = '';
+        if (btnNext) btnNext.style.display = '';
+
+        if (planErpPrice) planErpPrice.textContent = prices.erp;
+        if (planMultiPrice) planMultiPrice.textContent = prices.multi;
+
+        updateSummary(revenue);
     }
-    if (!cnpj || cnpj.length < 14) {
-        window.showToast('⚠️ Informe um CNPJ válido');
+}
+
+function updateSummary(revenue) {
+    revenue = revenue || document.getElementById('revenueSelect')?.value || '81000';
+    const prices = pricingTable[revenue];
+    const price = selectedPlan === 'erp' ? prices.erp : prices.multi;
+    const planName = selectedPlan === 'erp' ? 'Zyntra ERP' : 'Zyntra.Multivarejo';
+
+    const summaryPlan = document.getElementById('summaryPlan');
+    const summaryRevenue = document.getElementById('summaryRevenue');
+    const summaryTotal = document.getElementById('summaryTotal');
+
+    if (summaryPlan) summaryPlan.textContent = planName;
+    if (summaryRevenue) summaryRevenue.textContent = revenueLabels[revenue] || '';
+    if (summaryTotal) summaryTotal.textContent = `R$ ${price},00/mês`;
+}
+
+function goToPurchaseStep(step) {
+    const step1 = document.getElementById('purchaseStep1');
+    const step2 = document.getElementById('purchaseStep2');
+    const steps = document.querySelectorAll('.purchase-step');
+
+    if (step === 1) {
+        step1.style.display = '';
+        step2.style.display = 'none';
+        steps[0].classList.add('active');
+        steps[0].classList.remove('completed');
+        steps[1].classList.remove('active');
+    } else if (step === 2) {
+        step1.style.display = 'none';
+        step2.style.display = '';
+        steps[0].classList.remove('active');
+        steps[0].classList.add('completed');
+        steps[1].classList.add('active');
+    }
+}
+
+function enviarContato() {
+    const name = document.getElementById('contactName')?.value.trim();
+    const cnpj = document.getElementById('contactCnpj')?.value.trim();
+    const email = document.getElementById('contactEmail')?.value.trim();
+
+    if (!name || !cnpj || !email) {
+        window.showToast('⚠️ Preencha todos os campos obrigatórios');
         return;
     }
 
     closeModal('modalNewApp');
+    window.showToast('📩 Seus dados foram enviados! Um consultor entrará em contato em breve.');
+}
 
-    const planNames = {
-        'starter': 'Starter',
-        'profissional': 'Profissional',
-        'enterprise': 'Enterprise'
-    };
+function comprarAplicativo() {
+    const name = document.getElementById('regName')?.value.trim();
+    const email = document.getElementById('regEmail')?.value.trim();
+    const cnpj = document.getElementById('regCnpj')?.value.trim();
+    const companyName = document.getElementById('regCompanyName')?.value.trim();
 
-    window.showToast(`🛒 Processando compra do plano ${planNames[plan]} para "${name}"...`);
+    if (!name) { window.showToast('⚠️ Informe seu nome completo'); return; }
+    if (!email) { window.showToast('⚠️ Informe seu e-mail'); return; }
+    if (!cnpj) { window.showToast('⚠️ Informe o CNPJ ou CPF'); return; }
+    if (!companyName) { window.showToast('⚠️ Informe a Razão Social'); return; }
+
+    closeModal('modalNewApp');
+
+    const planName = selectedPlan === 'erp' ? 'Zyntra ERP' : 'Zyntra.Multivarejo';
+    window.showToast(`🛒 Processando compra do ${planName} para "${companyName}"...`);
 
     setTimeout(() => {
         window.showToast(`✅ Aplicativo adquirido com sucesso!`);
@@ -726,24 +827,92 @@ function comprarAplicativo() {
 }
 
 
-// ========== CNPJ MASK ==========
+// ========== PURCHASE MODAL: Event Listeners ==========
 document.addEventListener('DOMContentLoaded', () => {
-    const cnpjInput = document.getElementById('newAppCnpj');
-    if (cnpjInput) {
-        cnpjInput.addEventListener('input', (e) => {
-            let v = e.target.value.replace(/\D/g, '');
-            if (v.length > 14) v = v.slice(0, 14);
+    // Trial terms checkbox → enable/disable submit button
+    const testAcceptTerms = document.getElementById('testAcceptTerms');
+    const btnTrialSubmit = document.getElementById('btnTrialSubmit');
+    if (testAcceptTerms && btnTrialSubmit) {
+        testAcceptTerms.addEventListener('change', () => {
+            btnTrialSubmit.disabled = !testAcceptTerms.checked;
+        });
+    }
 
-            if (v.length > 12) {
-                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
-            } else if (v.length > 8) {
-                v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{1,4})/, '$1.$2.$3/$4');
-            } else if (v.length > 5) {
-                v = v.replace(/^(\d{2})(\d{3})(\d{1,3})/, '$1.$2.$3');
-            } else if (v.length > 2) {
-                v = v.replace(/^(\d{2})(\d{1,3})/, '$1.$2');
+    // Revenue selector → update pricing
+    const revenueSelect = document.getElementById('revenueSelect');
+    if (revenueSelect) {
+        revenueSelect.addEventListener('change', updatePricing);
+    }
+
+    // Plan card selection
+    document.querySelectorAll('.plan-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedPlan = card.dataset.plan;
+            updateSummary();
+        });
+    });
+
+    // "Repeat same data" checkbox in step 2
+    const regSameData = document.getElementById('regSameData');
+    if (regSameData) {
+        regSameData.addEventListener('change', () => {
+            if (regSameData.checked) {
+                const name = document.getElementById('regName')?.value || '';
+                const email = document.getElementById('regEmail')?.value || '';
+                const phone = document.getElementById('regPhone')?.value || '';
+                document.getElementById('regFinName').value = name;
+                document.getElementById('regFinEmail').value = email;
+                document.getElementById('regFinPhone').value = phone;
             }
+        });
+    }
 
+    // CNPJ mask for document fields
+    ['testDocument', 'contactCnpj', 'regCnpj'].forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+            input.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 14) v = v.slice(0, 14);
+
+                if (v.length <= 11) {
+                    // CPF mask
+                    if (v.length > 9) v = v.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})/, '$1.$2.$3-$4');
+                    else if (v.length > 6) v = v.replace(/^(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+                    else if (v.length > 3) v = v.replace(/^(\d{3})(\d{1,3})/, '$1.$2');
+                } else {
+                    // CNPJ mask
+                    v = v.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{1,2})/, '$1.$2.$3/$4-$5');
+                }
+
+                e.target.value = v;
+            });
+        }
+    });
+
+    // Phone masks
+    ['regPhone', 'regCompanyPhone', 'regFinPhone', 'contactWhatsApp'].forEach(fieldId => {
+        const input = document.getElementById(fieldId);
+        if (input) {
+            input.addEventListener('input', (e) => {
+                let v = e.target.value.replace(/\D/g, '');
+                if (v.length > 11) v = v.slice(0, 11);
+                if (v.length > 6) v = v.replace(/^(\d{2})(\d{5})(\d{1,4})/, '($1) $2-$3');
+                else if (v.length > 2) v = v.replace(/^(\d{2})(\d{1,5})/, '($1) $2');
+                e.target.value = v;
+            });
+        }
+    });
+
+    // CEP mask
+    const cepInput = document.getElementById('regCep');
+    if (cepInput) {
+        cepInput.addEventListener('input', (e) => {
+            let v = e.target.value.replace(/\D/g, '');
+            if (v.length > 8) v = v.slice(0, 8);
+            if (v.length > 5) v = v.replace(/^(\d{5})(\d{1,3})/, '$1-$2');
             e.target.value = v;
         });
     }
