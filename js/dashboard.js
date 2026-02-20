@@ -624,21 +624,9 @@ function acessarEmpresa(companyId) {
 
     window.showToast(`Acessando ERP da empresa ${companyId.toUpperCase()}...`);
 
-    // Redirect to company control panel
+    // Redirect to 404 page (ERP panels under construction)
     setTimeout(() => {
-        const route = companyRoutes[companyId];
-        if (route) {
-            window.location.href = route;
-        } else {
-            if (btn) {
-                btn.innerHTML = `
-                    Acessar
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                `;
-                btn.style.pointerEvents = '';
-            }
-            window.showToast('❌ Empresa não encontrada');
-        }
+        window.location.href = '../404.html';
     }, 1500);
 }
 
