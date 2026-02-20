@@ -23,6 +23,19 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userFullName) userFullName.textContent = loggedUser.fullName;
     if (userEmail) userEmail.textContent = loggedUser.email;
 
+    // Load user photo if available
+    if (loggedUser.photo && userAvatar) {
+        const img = new Image();
+        img.src = '../Fotos Usuarios/' + loggedUser.photo;
+        img.alt = loggedUser.name;
+        img.onload = () => {
+            userAvatar.textContent = '';
+            userAvatar.style.overflow = 'hidden';
+            img.style.cssText = 'width:100%;height:100%;border-radius:50%;object-fit:cover;';
+            userAvatar.appendChild(img);
+        };
+    }
+
     // ========== PROMO BANNER CAROUSEL ==========
     const promoSlides = [
         {
@@ -107,24 +120,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const companyCards = companyGrid.querySelectorAll('.company-card');
     const companyCount = document.getElementById('companyCount');
 
-    searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase().trim();
+    // ========== UNIFIED FILTER (search + category) ==========
+    function applyFilters() {
+        const query = searchInput.value.toLowerCase().trim();
+        const filterEl = document.getElementById('filterPopup');
+        const activeFilter = filterEl ? (filterEl.querySelector('.dash-popup__item.active')?.dataset.filter || 'all') : 'all';
+        const favs = getFavorites();
         let visibleCount = 0;
 
         companyCards.forEach(card => {
             const name = card.querySelector('.company-card__name')?.textContent.toLowerCase() || '';
             const cnpj = card.querySelector('.company-card__cnpj')?.textContent.toLowerCase() || '';
+            const companyId = card.dataset.company;
+            const statusEl = card.querySelector('.company-card__status-text');
+            const isActive = statusEl && statusEl.classList.contains('active');
+            const isFav = favs[companyId] === true;
 
-            if (name.includes(query) || cnpj.includes(query) || query === '') {
-                card.style.display = '';
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
+            const matchesSearch = name.includes(query) || cnpj.includes(query) || query === '';
+            let matchesFilter = true;
+            switch (activeFilter) {
+                case 'active': matchesFilter = isActive; break;
+                case 'favorites': matchesFilter = isFav; break;
+                case 'all': default: matchesFilter = true; break;
             }
+
+            const show = matchesSearch && matchesFilter;
+            card.style.display = show ? '' : 'none';
+            if (show) visibleCount++;
         });
 
         companyCount.textContent = visibleCount;
-    });
+    }
+
+    searchInput.addEventListener('input', () => applyFilters());
 
 
     // ========== VIEW TOGGLE ==========
@@ -137,11 +165,95 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const view = btn.dataset.view;
             if (view === 'list') {
-                companyGrid.style.gridTemplateColumns = '1fr';
-            } else {
-                companyGrid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                companyGrid.classList.add('list-view');
+            } else if (view === 'grid') {
+                companyGrid.classList.remove('list-view');
             }
         });
+    });
+
+
+    // ========== FILTER / SORT POPUPS ==========
+    function closeAllPopups() {
+        document.querySelectorAll('.dash-popup.open').forEach(p => p.classList.remove('open'));
+    }
+
+    // Filter popup
+    const btnFilter = document.getElementById('btnFilter');
+    const filterPopupEl = document.getElementById('filterPopup');
+
+    if (btnFilter && filterPopupEl) {
+        btnFilter.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = filterPopupEl.classList.contains('open');
+            closeAllPopups();
+            closeAllSettingsDropdowns();
+            if (!isOpen) filterPopupEl.classList.add('open');
+        });
+
+        filterPopupEl.querySelectorAll('.dash-popup__item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                filterPopupEl.querySelectorAll('.dash-popup__item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                applyFilters();
+                closeAllPopups();
+            });
+        });
+    }
+
+    // Sort popup
+    const btnSort = document.getElementById('btnSort');
+    const sortPopupEl = document.getElementById('sortPopup');
+    const originalCardOrder = Array.from(companyGrid.children);
+
+    if (btnSort && sortPopupEl) {
+        btnSort.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = sortPopupEl.classList.contains('open');
+            closeAllPopups();
+            closeAllSettingsDropdowns();
+            if (!isOpen) sortPopupEl.classList.add('open');
+        });
+
+        sortPopupEl.querySelectorAll('.dash-popup__item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sortPopupEl.querySelectorAll('.dash-popup__item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                const sortType = item.dataset.sort;
+
+                if (sortType === 'default') {
+                    originalCardOrder.forEach(child => companyGrid.appendChild(child));
+                } else {
+                    const cardsArray = Array.from(companyCards);
+                    const otherElements = Array.from(companyGrid.children).filter(el => !el.classList.contains('company-card'));
+
+                    cardsArray.sort((a, b) => {
+                        const nameA = a.querySelector('.company-card__name')?.textContent || '';
+                        const nameB = b.querySelector('.company-card__name')?.textContent || '';
+                        return sortType === 'az' ? nameA.localeCompare(nameB, 'pt-BR') : nameB.localeCompare(nameA, 'pt-BR');
+                    });
+
+                    // Rebuild grid: first card, then promo banner, then rest
+                    cardsArray.forEach((card, i) => {
+                        companyGrid.appendChild(card);
+                        if (i === 0 && otherElements.length > 0) {
+                            otherElements.forEach(el => companyGrid.appendChild(el));
+                        }
+                    });
+                }
+
+                closeAllPopups();
+            });
+        });
+    }
+
+    // Close popups on outside click
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.dash-popup-wrap')) {
+            closeAllPopups();
+        }
     });
 
 
@@ -161,11 +273,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // ========== FAVORITE TOGGLE ==========
+    // ========== FAVORITE TOGGLE WITH PERSISTENCE ==========
+    function getFavorites() {
+        try {
+            return JSON.parse(localStorage.getItem('zyntra_favorites')) || {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function saveFavorites(favs) {
+        localStorage.setItem('zyntra_favorites', JSON.stringify(favs));
+    }
+
+    // Load saved favorites on page load
+    function loadFavorites() {
+        const favs = getFavorites();
+        document.querySelectorAll('.company-card__favorite').forEach(btn => {
+            const card = btn.closest('.company-card');
+            const companyId = card ? card.dataset.company : null;
+            if (companyId && favs[companyId]) {
+                btn.classList.add('active');
+                btn.querySelector('svg').setAttribute('fill', 'currentColor');
+            } else if (companyId && favs[companyId] === false) {
+                btn.classList.remove('active');
+                btn.querySelector('svg').setAttribute('fill', 'none');
+            }
+        });
+    }
+
+    loadFavorites();
+
     document.querySelectorAll('.company-card__favorite').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
             btn.classList.toggle('active');
             const isFav = btn.classList.contains('active');
+            const card = btn.closest('.company-card');
+            const companyId = card ? card.dataset.company : null;
 
             if (isFav) {
                 btn.querySelector('svg').setAttribute('fill', 'currentColor');
@@ -173,6 +318,98 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 btn.querySelector('svg').setAttribute('fill', 'none');
                 showToast('Empresa removida dos favoritos');
+            }
+
+            // Persist to localStorage
+            if (companyId) {
+                const favs = getFavorites();
+                favs[companyId] = isFav;
+                saveFavorites(favs);
+            }
+        });
+    });
+
+
+    // ========== SETTINGS DROPDOWN ==========
+    function closeAllSettingsDropdowns() {
+        document.querySelectorAll('.settings-dropdown.open').forEach(dd => {
+            dd.classList.remove('open');
+        });
+    }
+
+    document.querySelectorAll('.company-card__settings').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const wrap = btn.closest('.company-card__settings-wrap');
+            const dropdown = wrap ? wrap.querySelector('.settings-dropdown') : null;
+            if (!dropdown) return;
+
+            const isOpen = dropdown.classList.contains('open');
+            closeAllSettingsDropdowns();
+
+            if (!isOpen) {
+                dropdown.classList.add('open');
+            }
+        });
+    });
+
+    // Close settings dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.company-card__settings-wrap')) {
+            closeAllSettingsDropdowns();
+        }
+    });
+
+    // Settings dropdown actions
+    document.querySelectorAll('.settings-dropdown__item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const action = item.dataset.action;
+            const dropdown = item.closest('.settings-dropdown');
+            const companyId = dropdown ? dropdown.dataset.company : null;
+            const card = dropdown ? dropdown.closest('.company-card') : null;
+            const companyName = card ? card.querySelector('.company-card__name')?.textContent : companyId;
+
+            closeAllSettingsDropdowns();
+
+            switch (action) {
+                case 'resumo':
+                    showToast(`📊 Abrindo resumo de ${companyName}...`);
+                    setTimeout(() => {
+                        if (companyId) {
+                            window.location.href = `${companyId}/painel.html`;
+                        }
+                    }, 1000);
+                    break;
+
+                case 'extrato':
+                    showToast(`📄 Abrindo extrato de ${companyName}...`);
+                    setTimeout(() => {
+                        window.location.href = 'extrato-financeiro.html';
+                    }, 1000);
+                    break;
+
+                case 'users':
+                    showToast(`👥 Abrindo gestão de usuários de ${companyName}...`);
+                    setTimeout(() => {
+                        window.location.href = `gerenciar-usuarios.html?empresa=${companyId}`;
+                    }, 800);
+                    break;
+
+                case 'groups':
+                    showToast(`🔐 Abrindo grupos de acesso de ${companyName}...`);
+                    break;
+
+                case 'security':
+                    showToast(`🛡️ Abrindo configurações de segurança de ${companyName}...`);
+                    break;
+
+                case 'terms':
+                    showToast(`📋 Abrindo termos de contrato de ${companyName}...`);
+                    break;
+
+                default:
+                    showToast('Ação não disponível');
             }
         });
     });

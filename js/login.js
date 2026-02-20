@@ -33,14 +33,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ==================== LOCAL CREDENTIALS (static/demo mode) ====================
   const LOCAL_USERS = {
-    'ti@aluforce.ind.br':           { password: 'alu0103', name: 'TI',        fullName: 'Tecnologia da Informação', role: 'admin' },
+    'ti@aluforce.ind.br':           { password: 'alu0103', name: 'TI',        fullName: 'Tecnologia da Informação', role: 'admin', photo: 'TI.webp' },
     'admin@aluforce.ind.br':        { password: 'alu0103', name: 'Admin',     fullName: 'Administrador do Sistema', role: 'admin' },
-    'douglas@aluforce.ind.br':      { password: 'alu0103', name: 'Douglas',   fullName: 'Douglas Silva',            role: 'user' },
-    'andreia@aluforce.ind.br':      { password: 'alu0103', name: 'Andreia',   fullName: 'Andreia Santos',           role: 'user' },
-    'guilherme@aluforce.ind.br':    { password: 'alu0103', name: 'Guilherme', fullName: 'Guilherme Oliveira',       role: 'user' },
-    'thiago@aluforce.ind.br':       { password: 'alu0103', name: 'Thiago',    fullName: 'Thiago Scarcella',         role: 'user' },
-    'clemerson@aluforce.ind.br':    { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',          role: 'user' },
-    'rh@aluforce.ind.br':           { password: 'alu0103', name: 'RH',        fullName: 'Recursos Humanos',         role: 'user' },
+    'douglas@aluforce.ind.br':      { password: 'alu0103', name: 'Douglas',   fullName: 'Douglas Silva',            role: 'user',  photo: 'Douglas.webp' },
+    'andreia@aluforce.ind.br':      { password: 'alu0103', name: 'Andreia',   fullName: 'Andreia Santos',           role: 'user',  photo: 'Andreia.webp' },
+    'guilherme@aluforce.ind.br':    { password: 'alu0103', name: 'Guilherme', fullName: 'Guilherme Oliveira',       role: 'user',  photo: 'Guilherme.webp' },
+    'thiago@aluforce.ind.br':       { password: 'alu0103', name: 'Thiago',    fullName: 'Thiago Scarcella',         role: 'user',  photo: 'Thiago.webp' },
+    'clemerson@aluforce.ind.br':    { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',          role: 'user',  photo: 'Clemerson.webp' },
+    'clemerson.silva@aluforce.ind.br': { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',       role: 'admin', photo: 'Clemerson.webp' },
+    'rh@aluforce.ind.br':           { password: 'alu0103', name: 'RH',        fullName: 'Recursos Humanos',         role: 'user',  photo: 'Rh.webp' },
     'demo@zyntra.com':              { password: 'demo123', name: 'Demo',      fullName: 'Usuário Demonstração',     role: 'admin' },
   };
 
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
       name: user.name,
       fullName: user.fullName,
       role: user.role,
+      photo: user.photo || null,
     };
   }
 
@@ -331,8 +333,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (domainMatch) {
       if (isStaticEnv) {
-        // Em ambiente estático, usar iniciais diretamente (sem tentar carregar imagens)
-        setAvatarInitials(firstName);
+        // Em ambiente estático, tentar carregar foto local
+        const avatarPath = getUserAvatar(firstName, fullUsername);
+        if (avatarPath) {
+          const staticPath = avatarPath.replace('avatars/', 'Fotos Usuarios/');
+          setAvatarImage(staticPath, firstName, emailParts[1]);
+        } else {
+          setAvatarInitials(firstName);
+        }
       } else {
         const avatarPath = getUserAvatar(firstName, fullUsername);
         if (avatarPath) {
