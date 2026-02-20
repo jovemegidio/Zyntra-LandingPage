@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== AUTH CHECK ==========
     const loggedUser = JSON.parse(localStorage.getItem('zyntra_user'));
     if (!loggedUser) {
-        window.location.href = '../login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load user photo if available
     if (loggedUser.photo && userAvatar) {
         const img = new Image();
-        img.src = '../Fotos Usuarios/' + loggedUser.photo;
+        img.src = 'Fotos Usuarios/' + loggedUser.photo;
         img.alt = loggedUser.name;
         img.onload = () => {
             userAvatar.textContent = '';
@@ -376,42 +376,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'resumo':
                     showToast(`📊 Abrindo resumo de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = `resumo-app.html?empresa=${companyId}`;
+                        window.location.href = `Empresas/resumo-app.html?empresa=${companyId}`;
                     }, 800);
                     break;
 
                 case 'extrato':
                     showToast(`📄 Abrindo extrato de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = 'extrato-financeiro.html';
+                        window.location.href = 'Empresas/extrato-financeiro.html';
                     }, 1000);
                     break;
 
                 case 'users':
                     showToast(`👥 Abrindo gestão de usuários de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = `gerenciar-usuarios.html?empresa=${companyId}`;
+                        window.location.href = `Empresas/gerenciar-usuarios.html?empresa=${companyId}`;
                     }, 800);
                     break;
 
                 case 'groups':
                     showToast(`🔐 Abrindo grupos de acesso de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = `grupos-de-acesso.html?empresa=${companyId}`;
+                        window.location.href = `Empresas/grupos-de-acesso.html?empresa=${companyId}`;
                     }, 800);
                     break;
 
                 case 'security':
                     showToast(`🛡️ Abrindo configurações de segurança de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = `seguranca.html?empresa=${companyId}`;
+                        window.location.href = `Empresas/seguranca.html?empresa=${companyId}`;
                     }, 800);
                     break;
 
                 case 'terms':
                     showToast(`📋 Abrindo termos de contrato de ${companyName}...`);
                     setTimeout(() => {
-                        window.location.href = `termos-de-contrato.html?empresa=${companyId}`;
+                        window.location.href = `Empresas/termos-de-contrato.html?empresa=${companyId}`;
                     }, 800);
                     break;
 
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('zyntra_user');
             showToast('Saindo da conta...');
             setTimeout(() => {
-                window.location.href = '../login.html';
+                window.location.href = 'login.html';
             }, 1000);
         });
     }
@@ -606,9 +606,9 @@ function acessarEmpresa(companyId) {
 
     // Company routes mapping
     const companyRoutes = {
-        'aluforce': 'aluforce/painel.html',
-        'energy': 'energy/painel.html',
-        'labor-energy': 'labor-energy/painel.html'
+        'aluforce': 'Empresas/aluforce/painel.html',
+        'energy': 'Empresas/energy/painel.html',
+        'labor-energy': 'Empresas/labor-energy/painel.html'
     };
 
     // Loading state
@@ -626,7 +626,7 @@ function acessarEmpresa(companyId) {
 
     // Redirect to 404 page (ERP panels under construction)
     setTimeout(() => {
-        window.location.href = '../404.html';
+        window.location.href = '404.html';
     }, 1500);
 }
 

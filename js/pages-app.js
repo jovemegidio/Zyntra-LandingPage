@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== AUTH CHECK ==========
     const loggedUser = JSON.parse(localStorage.getItem('zyntra_user'));
     if (!loggedUser) {
-        window.location.href = '../login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('zyntra_user');
             showToast('Saindo da conta...');
             setTimeout(() => {
-                window.location.href = '../login.html';
+                window.location.href = 'login.html';
             }, 1000);
         });
     }

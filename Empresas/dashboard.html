@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <base href="/Zyntra-SGE/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zyntra: Meus Aplicativos</title>
     <meta name="description" content="Painel de aplicativos Zyntra. Acesse seus ERPs, configure aplicativos e gerencie suas empresas.">
@@ -9,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/pages-app.css">
-    <link rel="icon" type="image/png" href="../Favicon - Zyntra.png">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/pages-app.css">
+    <link rel="icon" type="image/png" href="Favicon - Zyntra.png">
 </head>
 <body>
 
@@ -19,14 +20,14 @@
     <nav class="dash-nav">
         <div class="dash-nav__inner">
             <div class="dash-nav__left">
-                <a href="../index.html" class="dash-nav__logo">
-                    <img src="../Zyntra - Branco.png" alt="Zyntra">
+                <a href="index.html" class="dash-nav__logo">
+                    <img src="Zyntra - Branco.png" alt="Zyntra">
                 </a>
                 <div class="dash-nav__links">
-                    <a href="dashboard.html" class="dash-nav__link active">Meus Aplicativos</a>
-                    <a href="extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
-                    <a href="treinamentos.html" class="dash-nav__link">Meus Treinamentos</a>
-                    <a href="zyntra-store.html" class="dash-nav__link">Zyntra Store</a>
+                    <a href="Empresas/dashboard.html" class="dash-nav__link active">Meus Aplicativos</a>
+                    <a href="Empresas/extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
+                    <a href="Empresas/treinamentos.html" class="dash-nav__link">Meus Treinamentos</a>
+                    <a href="Empresas/zyntra-store.html" class="dash-nav__link">Zyntra Store</a>
                 </div>
 
                 <!-- Mobile menu toggle -->
@@ -82,10 +83,10 @@
     <!-- Mobile Nav Overlay -->
     <div class="dash-mobile-nav" id="mobileNav">
         <div class="dash-mobile-nav__menu">
-            <a href="dashboard.html" class="dash-nav__link active">Meus Aplicativos</a>
-            <a href="extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
-            <a href="treinamentos.html" class="dash-nav__link">Meus Treinamentos</a>
-            <a href="zyntra-store.html" class="dash-nav__link">Zyntra Store</a>
+            <a href="Empresas/dashboard.html" class="dash-nav__link active">Meus Aplicativos</a>
+            <a href="Empresas/extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
+            <a href="Empresas/treinamentos.html" class="dash-nav__link">Meus Treinamentos</a>
+            <a href="Empresas/zyntra-store.html" class="dash-nav__link">Zyntra Store</a>
         </div>
     </div>
 
@@ -244,7 +245,7 @@
                 </div>
                 <div class="company-card__body">
                     <div class="company-card__logo">
-                        <img src="../Icones/Icone Aluforce.jpg" alt="Aluforce">
+                        <img src="Icones/Icone Aluforce.jpg" alt="Aluforce">
                     </div>
                     <h3 class="company-card__name">ALUFORCE</h3>
                     <p class="company-card__cnpj">CNPJ: 12.345.678/0001-01</p>
@@ -706,7 +707,7 @@
     <div class="toast" id="toast"></div>
 
     <!-- Dashboard JavaScript -->
-    <script src="../js/dashboard.js"></script>
+    <script src="js/dashboard.js"></script>
 
 </body>
 </html>

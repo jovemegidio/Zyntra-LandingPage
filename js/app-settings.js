@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== AUTH CHECK ==========
     const loggedUser = JSON.parse(localStorage.getItem('zyntra_user'));
     if (!loggedUser) {
-        window.location.href = '../login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load user photo if available
     if (loggedUser.photo && userAvatar) {
         const img = new Image();
-        img.src = '../Fotos Usuarios/' + loggedUser.photo;
+        img.src = 'Fotos Usuarios/' + loggedUser.photo;
         img.alt = loggedUser.name;
         img.onload = () => {
             userAvatar.textContent = '';

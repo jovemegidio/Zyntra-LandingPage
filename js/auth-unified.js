@@ -62,9 +62,9 @@
     
     // Configurações
     const AUTH_CONFIG = {
-        loginUrl: isStaticEnv ? '../login.html' : '/login.html',
+        loginUrl: 'login.html',
         apiMeEndpoint: '/api/me',
-        dashboardUrl: isStaticEnv ? '../Empresas/dashboard.html' : '/index.html',
+        dashboardUrl: 'Empresas/dashboard.html',
         timeout: 5000,
         debug: !isStaticEnv // Desliga logs verbosos no modo estático
     };

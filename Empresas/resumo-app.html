@@ -1,17 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <base href="/Zyntra-SGE/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zyntra: Resumo do Aplicativo</title>
     <meta name="robots" content="noindex">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/pages-app.css">
-    <link rel="stylesheet" href="../css/app-settings.css">
-    <link rel="icon" type="image/png" href="../Favicon - Zyntra.png">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/pages-app.css">
+    <link rel="stylesheet" href="css/app-settings.css">
+    <link rel="icon" type="image/png" href="Favicon - Zyntra.png">
 </head>
 <body>
 
@@ -19,10 +20,10 @@
     <nav class="dash-nav">
         <div class="dash-nav__inner">
             <div class="dash-nav__left">
-                <a href="dashboard.html" class="dash-nav__logo"><img src="../Zyntra - Branco.png" alt="Zyntra"></a>
+                <a href="Empresas/dashboard.html" class="dash-nav__logo"><img src="Zyntra - Branco.png" alt="Zyntra"></a>
                 <div class="dash-nav__links">
-                    <a href="dashboard.html" class="dash-nav__link">Meus Aplicativos</a>
-                    <a href="extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
+                    <a href="Empresas/dashboard.html" class="dash-nav__link">Meus Aplicativos</a>
+                    <a href="Empresas/extrato-financeiro.html" class="dash-nav__link">Extrato Financeiro</a>
                 </div>
             </div>
             <div class="dash-nav__right">
@@ -54,27 +55,27 @@
             <span class="app-company__status">Ativo</span>
         </div>
         <div class="app-company__logo" id="companyLogo">
-            <img src="../Icones/Icone Aluforce.jpg" alt="Logo">
+            <img src="Icones/Icone Aluforce.jpg" alt="Logo">
         </div>
     </div>
 
     <!-- TABS -->
     <div class="app-tabs">
-        <a href="gerenciar-usuarios.html" class="app-tabs__item" id="tabUsers">
+        <a href="Empresas/gerenciar-usuarios.html" class="app-tabs__item" id="tabUsers">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
             Cadastrar Usuários
         </a>
-        <a href="grupos-de-acesso.html" class="app-tabs__item" id="tabGroups">
+        <a href="Empresas/grupos-de-acesso.html" class="app-tabs__item" id="tabGroups">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Grupos de Acesso
         </a>
         <a href="#" class="app-tabs__item">Dados de Faturamento</a>
-        <a href="seguranca.html" class="app-tabs__item" id="tabSecurity">
+        <a href="Empresas/seguranca.html" class="app-tabs__item" id="tabSecurity">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Segurança
         </a>
         <a href="#" class="app-tabs__item">Auditoria</a>
-        <a href="termos-de-contrato.html" class="app-tabs__item" id="tabTerms">Termos de Contrato</a>
+        <a href="Empresas/termos-de-contrato.html" class="app-tabs__item" id="tabTerms">Termos de Contrato</a>
     </div>
 
     <!-- MAIN CONTENT -->
@@ -111,7 +112,7 @@
                 <div class="app-info-box green">
                     Você tem acesso ilimitado a instrutores especializados, gratuitamente, e para sempre.
                 </div>
-                <p style="margin-top: 12px;">Como administrador, você pode acompanhar o <a href="treinamentos.html" style="color:var(--primary);font-weight:600;">histórico de participação do seu time →</a></p>
+                <p style="margin-top: 12px;">Como administrador, você pode acompanhar o <a href="Empresas/treinamentos.html" style="color:var(--primary);font-weight:600;">histórico de participação do seu time →</a></p>
             </div>
         </div>
 
@@ -119,7 +120,7 @@
         <div class="app-section">
             <div class="app-section__title">
                 <h2>Adicionais contratados na Zyntra Store</h2>
-                <a href="zyntra-store.html">Contratar mais aplicativos</a>
+                <a href="Empresas/zyntra-store.html">Contratar mais aplicativos</a>
             </div>
             <div class="app-table-wrap">
                 <table class="app-table">
@@ -202,6 +203,6 @@
     </main>
 
     <div class="toast" id="toast"></div>
-    <script src="../js/app-settings.js"></script>
+    <script src="js/app-settings.js"></script>
 </body>
 </html>

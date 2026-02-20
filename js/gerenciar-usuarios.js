@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== AUTH CHECK ==========
     const loggedUser = JSON.parse(localStorage.getItem('zyntra_user'));
     if (!loggedUser) {
-        window.location.href = '../login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'aluforce': {
             name: 'ALUFORCE',
             status: 'Ativo',
-            logo: '../Icones/Icone Aluforce.jpg'
+            logo: 'Icones/Icone Aluforce.jpg'
         },
         'energy': {
             name: 'ENERGY',
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('zyntra_user');
             showToast('Saindo da conta...');
             setTimeout(() => {
-                window.location.href = '../login.html';
+                window.location.href = 'login.html';
             }, 1000);
         });
     }
