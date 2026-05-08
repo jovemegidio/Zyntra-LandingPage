@@ -32,17 +32,10 @@ document.addEventListener('DOMContentLoaded', () => {
   );
 
   // ==================== LOCAL CREDENTIALS (static/demo mode) ====================
-  const LOCAL_USERS = {
-    'ti@aluforce.ind.br':           { password: 'alu0103', name: 'TI',        fullName: 'Tecnologia da Informação', role: 'admin', photo: 'TI.webp' },
-    'admin@aluforce.ind.br':        { password: 'alu0103', name: 'Admin',     fullName: 'Administrador do Sistema', role: 'admin' },
-    'douglas@aluforce.ind.br':      { password: 'alu0103', name: 'Douglas',   fullName: 'Douglas Silva',            role: 'user',  photo: 'Douglas.webp' },
-    'andreia@aluforce.ind.br':      { password: 'alu0103', name: 'Andreia',   fullName: 'Andreia Santos',           role: 'user',  photo: 'Andreia.webp' },
-    'guilherme@aluforce.ind.br':    { password: 'alu0103', name: 'Guilherme', fullName: 'Guilherme Oliveira',       role: 'user',  photo: 'Guilherme.webp' },
-    'thiago@aluforce.ind.br':       { password: 'alu0103', name: 'Thiago',    fullName: 'Thiago Scarcella',         role: 'user',  photo: 'Thiago.webp' },
-    'clemerson@aluforce.ind.br':    { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',          role: 'user',  photo: 'Clemerson.webp' },
-    'clemerson.silva@aluforce.ind.br': { password: 'alu0103', name: 'Clemerson', fullName: 'Clemerson Silva',       role: 'admin', photo: 'Clemerson.webp' },
-    'rh@aluforce.ind.br':           { password: 'alu0103', name: 'RH',        fullName: 'Recursos Humanos',         role: 'user',  photo: 'Rh.webp' },
-    'demo@zyntra.com':              { password: 'demo123', name: 'Demo',      fullName: 'Usuário Demonstração',     role: 'admin' },
+  // AVISO: Credenciais removidas por segurança.
+  // Para modo demo, defina LOCAL_USERS em um arquivo config.js separado (não commitado).
+  const LOCAL_USERS = window.__LOCAL_DEMO_USERS__ || {
+    'demo@zyntra.com': { password: 'demo123', name: 'Demo', fullName: 'Usuário Demonstração', role: 'admin' },
   };
 
   // Autenticação local (retorna user data ou null)
