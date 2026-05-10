@@ -151,10 +151,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ========== CONTACT FORM (EmailJS Integration) ==========
-    // Para ativar: 1) Crie conta em emailjs.com  2) Substitua os IDs abaixo
-    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';       // Sua public key do EmailJS
-    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';       // Seu service ID
-    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';     // Seu template ID
+    // Destino: agencyjapa@gmail.com
+    //
+    // Para ativar, acesse https://emailjs.com e preencha as 3 credenciais abaixo:
+    //   1. PUBLIC_KEY  → Painel > Account > General > Public Key
+    //   2. SERVICE_ID  → Painel > Email Services > (conecte o Gmail agencyjapa@gmail.com) > Service ID
+    //   3. TEMPLATE_ID → Painel > Email Templates > (crie um template com variáveis abaixo) > Template ID
+    //
+    // Variáveis usadas no template: {{to_email}}, {{from_name}}, {{from_email}},
+    //                                {{phone}}, {{company}}, {{message}}, {{reply_to}}
+    const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
+    const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
 
     // Inicializar EmailJS (só se a key foi configurada)
     const emailjsReady = EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY';
@@ -223,20 +231,22 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (emailjsReady && typeof emailjs !== 'undefined') {
-            // Envio real via EmailJS
+            // Envio real via EmailJS → agencyjapa@gmail.com
             emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                from_name: data.name,
+                to_email:   'agencyjapa@gmail.com',
+                from_name:  data.name,
                 from_email: data.email,
-                phone: data.phone,
-                company: data.company,
-                message: data.message
+                reply_to:   data.email,
+                phone:      data.phone || 'Não informado',
+                company:    data.company || 'Não informada',
+                message:    data.message
             }).then(showSuccess).catch((err) => {
                 console.error('EmailJS error:', err);
                 showError();
             });
         } else {
-            // Fallback: simula envio (remover quando EmailJS estiver configurado)
-            console.log('Form data (EmailJS não configurado):', data);
+            // Fallback enquanto EmailJS não está configurado
+            console.warn('EmailJS não configurado. Configure PUBLIC_KEY, SERVICE_ID e TEMPLATE_ID em main.js');
             setTimeout(showSuccess, 1500);
         }
     });
