@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard.css">
-    <link rel="stylesheet" href="css/pages-app.css">
+    <link rel="stylesheet" href="css/treinamentos.css">
     <link rel="icon" type="image/png" href="Favicon - Zyntra.png">
 </head>
 <body>
@@ -48,7 +48,7 @@
                             <div class="user-dropdown__name" id="userFullName">Usuário</div>
                             <div class="user-dropdown__email" id="userEmail">usuario@email.com</div>
                         </div>
-                        <button class="user-dropdown__item" onclick="window.location.href='dashboard.html'">
+                        <button class="user-dropdown__item" onclick="window.location.href='Empresas/dashboard.html'">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                             Meus Aplicativos
                         </button>
@@ -77,254 +77,382 @@
         </div>
     </div>
 
-    <!-- ========== MAIN CONTENT ========== -->
-    <main class="page-main">
+    <!-- ========== TWO-COLUMN LAYOUT ========== -->
+    <div class="trn-layout">
 
-        <!-- Page Header -->
-        <div class="page-header">
-            <div class="page-header__left">
-                <h1>Meus Treinamentos</h1>
-                <p>Aprenda a usar o Zyntra ERP com cursos gratuitos, certificações e webinars ao vivo.</p>
+        <!-- COURSE SIDEBAR -->
+        <aside class="trn-sidebar" id="trnSidebar">
+            <div class="trn-sidebar__header">
+                <h2 class="trn-sidebar__title">Central de Aprendizado</h2>
+                <button class="trn-sidebar__close" id="sidebarCloseBtn" aria-label="Fechar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
-            <div class="page-header__actions">
-                <div class="trn-progress-badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    <span>3 de 8 cursos concluídos</span>
-                </div>
-            </div>
-        </div>
 
-        <!-- Training Stats -->
-        <div class="trn-stats">
-            <div class="trn-stat">
-                <div class="trn-stat__icon purple">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                </div>
-                <div class="trn-stat__info">
-                    <strong>12h 30min</strong>
-                    <span>Tempo assistido</span>
-                </div>
+            <div class="trn-sidebar__search">
+                <svg class="trn-sidebar__search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" class="trn-sidebar__search-input" id="trnSearch" placeholder="Buscar tutoriais...">
             </div>
-            <div class="trn-stat">
-                <div class="trn-stat__icon green">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                </div>
-                <div class="trn-stat__info">
-                    <strong>3</strong>
-                    <span>Certificados</span>
-                </div>
-            </div>
-            <div class="trn-stat">
-                <div class="trn-stat__icon orange">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </div>
-                <div class="trn-stat__info">
-                    <strong>37%</strong>
+
+            <div class="trn-sidebar__progress">
+                <div class="trn-sidebar__progress-top">
                     <span>Progresso geral</span>
+                    <strong id="sidebarProgressPct">0%</strong>
+                </div>
+                <div class="trn-sidebar__progress-bar">
+                    <div class="trn-sidebar__progress-fill" id="sidebarProgressFill" style="width:0%"></div>
+                </div>
+                <div class="trn-sidebar__stats">
+                    <span id="sidebarCompleted">0</span> de <span id="sidebarTotal">0</span> aulas concluídas
                 </div>
             </div>
-        </div>
 
-        <!-- In Progress -->
-        <section class="page-section">
-            <div class="page-section__header">
-                <h2>Em andamento</h2>
+            <nav class="trn-nav" id="trnNav">
+                <!-- Rendered by treinamentos.js -->
+            </nav>
+
+            <button class="trn-sidebar__home-btn" id="sidebarHomeBtn" style="display:none">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Todos os cursos
+            </button>
+        </aside>
+
+        <!-- Mobile sidebar overlay -->
+        <div class="trn-sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- MAIN CONTENT -->
+        <div class="trn-content">
+
+            <!-- Mobile top bar -->
+            <div class="trn-mobile-bar">
+                <button class="trn-mobile-menu-btn" id="sidebarOpenBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    Cursos
+                </button>
+                <span class="trn-mobile-breadcrumb" id="mobileBreadcrumb">Meus Treinamentos</span>
             </div>
-            <div class="trn-grid">
 
-                <div class="trn-card">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #6C5CE7, #A29BFE);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                        <span class="trn-card__duration">2h 15min</span>
+            <!-- ====== HOME VIEW ====== -->
+            <div class="trn-home" id="trnHome">
+
+                <div class="trn-home__header">
+                    <div>
+                        <h1>Meus Treinamentos</h1>
+                        <p>Aprenda a usar o Zyntra ERP com tutoriais em vídeo, cursos gratuitos e certificações.</p>
                     </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Módulo Financeiro</span>
-                        <h3 class="trn-card__title">Gestão de Contas a Pagar e Receber</h3>
-                        <p class="trn-card__desc">Aprenda a controlar contas, gerar boletos e realizar conciliação bancária.</p>
-                        <div class="trn-card__progress">
-                            <div class="trn-card__progress-bar">
-                                <div class="trn-card__progress-fill" style="width: 65%;"></div>
+                    <div class="trn-progress-badge">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        <span id="homeProgressBadge">Carregando...</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="trn-stats-row">
+                    <div class="trn-stat-card">
+                        <div class="trn-stat-card__icon" style="background:rgba(108,92,231,0.1);color:#6C5CE7;">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        </div>
+                        <div>
+                            <strong id="statTime">—</strong>
+                            <span>Tempo total de vídeos</span>
+                        </div>
+                    </div>
+                    <div class="trn-stat-card">
+                        <div class="trn-stat-card__icon" style="background:rgba(0,184,148,0.1);color:#00B894;">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        </div>
+                        <div>
+                            <strong id="statCerts">0</strong>
+                            <span>Certificados obtidos</span>
+                        </div>
+                    </div>
+                    <div class="trn-stat-card">
+                        <div class="trn-stat-card__icon" style="background:rgba(225,112,85,0.1);color:#E17055;">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                        <div>
+                            <strong id="statProgress">0%</strong>
+                            <span>Progresso geral</span>
+                        </div>
+                    </div>
+                    <div class="trn-stat-card">
+                        <div class="trn-stat-card__icon" style="background:rgba(9,132,227,0.1);color:#0984e3;">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        </div>
+                        <div>
+                            <strong>Sob demanda</strong>
+                            <span>Acesso ilimitado</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- In Progress -->
+                <div class="trn-section" id="inProgressSection" style="display:none;">
+                    <h2 class="trn-section__title">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Em andamento
+                    </h2>
+                    <div class="trn-cards" id="inProgressCards"></div>
+                </div>
+
+                <!-- All Modules -->
+                <div class="trn-section">
+                    <h2 class="trn-section__title">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                        Todos os módulos
+                    </h2>
+                    <div class="trn-modules-grid" id="allModulesGrid"></div>
+                </div>
+
+            </div>
+
+            <!-- ====== LESSON VIEW ====== -->
+            <div class="trn-lesson" id="trnLesson" style="display:none;">
+
+                <!-- Breadcrumb -->
+                <nav class="trn-breadcrumb">
+                    <button class="trn-breadcrumb__back" id="backToHome">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                        Treinamentos
+                    </button>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    <span id="breadcrumbCat">Categoria</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    <span id="breadcrumbLesson">Aula</span>
+                </nav>
+
+                <!-- Video player -->
+                <div class="trn-player-wrap">
+                    <div class="trn-player" id="trnPlayer">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Lesson meta -->
+                <div class="trn-lesson__meta">
+                    <div class="trn-lesson__meta-left">
+                        <span class="trn-lesson__category" id="lessonCategory">Módulo</span>
+                        <h2 class="trn-lesson__title" id="lessonTitle">Título da aula</h2>
+                        <p class="trn-lesson__desc" id="lessonDesc">Descrição.</p>
+                    </div>
+                    <div class="trn-lesson__meta-right">
+                        <div class="trn-lesson__duration">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span id="lessonDuration">—</span>
+                        </div>
+                        <button class="trn-lesson__mark-btn" id="markCompleteBtn">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Marcar como concluída
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Prev / Next -->
+                <div class="trn-lesson__nav">
+                    <button class="trn-lesson__nav-btn" id="prevLessonBtn" disabled>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                        Aula anterior
+                    </button>
+                    <button class="trn-lesson__nav-btn primary" id="nextLessonBtn">
+                        Próxima aula
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+
+                <!-- Comments / Q&A -->
+                <div class="trn-comments">
+                    <h3 class="trn-comments__title">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        Comentários e dúvidas
+                    </h3>
+
+                    <div class="trn-comment-form">
+                        <div class="trn-comment-form__avatar" id="commentAvatar">U</div>
+                        <div class="trn-comment-form__input-wrap">
+                            <textarea
+                                class="trn-comment-form__textarea"
+                                id="commentInput"
+                                placeholder="Deixe sua dúvida ou comentário sobre esta aula..."
+                                rows="2"
+                            ></textarea>
+                            <div class="trn-comment-form__actions">
+                                <button class="trn-comment-form__submit" id="commentSubmit">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                    Enviar
+                                </button>
                             </div>
-                            <span>65%</span>
                         </div>
-                        <button class="trn-card__btn">
-                            Continuar
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </button>
                     </div>
-                </div>
 
-                <div class="trn-card">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #00B894, #55efc4);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        <span class="trn-card__duration">3h 40min</span>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Módulo Fiscal</span>
-                        <h3 class="trn-card__title">Emissão de Notas Fiscais (NF-e)</h3>
-                        <p class="trn-card__desc">Guia completo para emissão, cancelamento e inutilização de NF-e.</p>
-                        <div class="trn-card__progress">
-                            <div class="trn-card__progress-bar">
-                                <div class="trn-card__progress-fill" style="width: 30%;"></div>
-                            </div>
-                            <span>30%</span>
-                        </div>
-                        <button class="trn-card__btn">
-                            Continuar
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </button>
-                    </div>
+                    <div class="trn-comments__list" id="commentsList"></div>
                 </div>
 
             </div>
-        </section>
 
-        <!-- Completed -->
-        <section class="page-section">
-            <div class="page-section__header">
-                <h2>Concluídos</h2>
+        </div><!-- .trn-content -->
+    </div><!-- .trn-layout -->
+
+    <!-- ========== CHAT SUPORTE (visual Teams) ========== -->
+    <div class="chat-widget" id="chatWidget">
+
+        <!-- Floating button -->
+        <button class="chat-widget__btn" id="chatToggleBtn" aria-label="Abrir suporte">
+            <svg class="chat-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg class="chat-icon-close" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span class="chat-widget__badge" id="chatBadge">1</span>
+        </button>
+
+        <!-- Teams-style panel -->
+        <div class="chat-panel" id="chatPanel">
+
+            <!-- DARK SIDEBAR -->
+            <aside class="chat-sidebar">
+                <div class="chat-sidebar__header">
+                    <div class="chat-sidebar__brand">
+                        <div class="chat-sidebar__logo">
+                            <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+                                <path d="M4 7L12 3L20 7L12 11L4 7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M4 12L12 16L20 12" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                                <path d="M4 17L12 21L20 17" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="chat-sidebar__brand-text">
+                            <span>Zyntra</span>
+                            <small>Suporte</small>
+                        </div>
+                    </div>
+                    <button class="chat-sidebar__close" id="chatCloseBtn" aria-label="Fechar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+
+                <div class="chat-sidebar__search">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" placeholder="Buscar canais ou pessoas...">
+                </div>
+
+                <div class="chat-sidebar__body">
+
+                    <!-- BOB I.A. -->
+                    <div class="chat-sidebar__section-label">Assistente</div>
+                    <button class="chat-sidebar__bob" id="navBob" data-channel="bob">
+                        <div class="chat-sidebar__bob-avatar">
+                            IA
+                            <div class="chat-sidebar__bob-sparkle">★</div>
+                        </div>
+                        <div class="chat-sidebar__bob-info">
+                            <span>BOB I.A.</span>
+                            <small>Assistente Virtual</small>
+                        </div>
+                        <span class="chat-sidebar__bob-badge">Beta</span>
+                    </button>
+
+                    <!-- Channels -->
+                    <div class="chat-sidebar__section-header">
+                        <button class="chat-sidebar__section-toggle">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+                            Canais
+                        </button>
+                    </div>
+                    <ul class="chat-sidebar__list">
+                        <li><button class="chat-sidebar__item active" data-channel="suporte">
+                            <span class="chat-sidebar__hash">#</span>
+                            suporte-geral
+                            <span class="chat-sidebar__unread" id="unread-suporte">1</span>
+                        </button></li>
+                        <li><button class="chat-sidebar__item" data-channel="tecnico">
+                            <span class="chat-sidebar__hash">#</span>
+                            problemas-técnicos
+                        </button></li>
+                        <li><button class="chat-sidebar__item" data-channel="financeiro">
+                            <span class="chat-sidebar__hash">#</span>
+                            financeiro
+                        </button></li>
+                        <li><button class="chat-sidebar__item" data-channel="duvidas">
+                            <span class="chat-sidebar__hash">#</span>
+                            dúvidas-sistema
+                        </button></li>
+                    </ul>
+
+                    <!-- Direct Messages -->
+                    <div class="chat-sidebar__section-header">
+                        <button class="chat-sidebar__section-toggle">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+                            Mensagens diretas
+                        </button>
+                    </div>
+                    <ul class="chat-sidebar__list">
+                        <li><button class="chat-sidebar__item" data-channel="dm-suporte">
+                            <div class="chat-sidebar__dm-avatar">SZ</div>
+                            Suporte Zyntra
+                            <span class="chat-sidebar__status online"></span>
+                        </button></li>
+                    </ul>
+
+                </div>
+
+                <div class="chat-sidebar__footer">
+                    <div class="chat-sidebar__footer-avatar" id="chatUserAvatar">U</div>
+                    <div class="chat-sidebar__footer-info">
+                        <span id="chatUserName">Usuário</span>
+                        <small>Online</small>
+                    </div>
+                    <span class="chat-sidebar__status online"></span>
+                </div>
+            </aside>
+
+            <!-- CHAT MAIN -->
+            <div class="chat-main">
+                <div class="chat-main__header">
+                    <div class="chat-main__header-left">
+                        <span class="chat-main__channel-icon" id="chatChannelIcon">#</span>
+                        <div>
+                            <div class="chat-main__channel-name" id="chatChannelName">suporte-geral</div>
+                            <div class="chat-main__channel-desc" id="chatChannelDesc">Canal de suporte geral da Zyntra</div>
+                        </div>
+                    </div>
+                    <div class="chat-main__header-right">
+                        <span class="chat-main__online">
+                            <span class="chat-pulse"></span>
+                            3 online
+                        </span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages"></div>
+
+                <div class="chat-input-wrap">
+                    <div class="chat-input">
+                        <button class="chat-input__action" title="Anexar arquivo">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+                        </button>
+                        <textarea
+                            class="chat-input__textarea"
+                            id="chatInputArea"
+                            placeholder="Mensagem em #suporte-geral"
+                            rows="1"
+                        ></textarea>
+                        <div class="chat-input__actions">
+                            <button class="chat-input__action" title="Emoji">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            </button>
+                            <button class="chat-input__send" id="chatSendBtn" disabled>
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chat-input__hint">
+                        <kbd>Enter</kbd> para enviar &middot; <kbd>Shift+Enter</kbd> nova linha &middot; Mensagens criptografadas
+                    </div>
+                </div>
             </div>
-            <div class="trn-grid">
 
-                <div class="trn-card trn-card--completed">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #636e72, #b2bec3);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                        <span class="trn-card__duration">1h 20min</span>
-                        <div class="trn-card__completed-badge">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        </div>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Introdução</span>
-                        <h3 class="trn-card__title">Primeiros Passos no Zyntra ERP</h3>
-                        <p class="trn-card__desc">Visão geral do sistema, navegação e configurações iniciais.</p>
-                        <div class="trn-card__progress">
-                            <div class="trn-card__progress-bar">
-                                <div class="trn-card__progress-fill complete" style="width: 100%;"></div>
-                            </div>
-                            <span>100%</span>
-                        </div>
-                        <button class="trn-card__btn trn-card__btn--secondary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Certificado
-                        </button>
-                    </div>
-                </div>
-
-                <div class="trn-card trn-card--completed">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #636e72, #b2bec3);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                        <span class="trn-card__duration">2h 00min</span>
-                        <div class="trn-card__completed-badge">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        </div>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Módulo Vendas</span>
-                        <h3 class="trn-card__title">Cadastro de Produtos e Pedidos</h3>
-                        <p class="trn-card__desc">Cadastre produtos, crie pedidos e gerencie orçamentos.</p>
-                        <div class="trn-card__progress">
-                            <div class="trn-card__progress-bar">
-                                <div class="trn-card__progress-fill complete" style="width: 100%;"></div>
-                            </div>
-                            <span>100%</span>
-                        </div>
-                        <button class="trn-card__btn trn-card__btn--secondary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Certificado
-                        </button>
-                    </div>
-                </div>
-
-                <div class="trn-card trn-card--completed">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #636e72, #b2bec3);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
-                        <span class="trn-card__duration">1h 50min</span>
-                        <div class="trn-card__completed-badge">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                        </div>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Módulo Estoque</span>
-                        <h3 class="trn-card__title">Controle de Estoque e Inventário</h3>
-                        <p class="trn-card__desc">Movimentações, inventário físico e alertas de estoque mínimo.</p>
-                        <div class="trn-card__progress">
-                            <div class="trn-card__progress-bar">
-                                <div class="trn-card__progress-fill complete" style="width: 100%;"></div>
-                            </div>
-                            <span>100%</span>
-                        </div>
-                        <button class="trn-card__btn trn-card__btn--secondary">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Certificado
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- Available Courses -->
-        <section class="page-section">
-            <div class="page-section__header">
-                <h2>Cursos Disponíveis</h2>
-            </div>
-            <div class="trn-grid">
-
-                <div class="trn-card">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #fd79a8, #e84393);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span class="trn-card__duration">2h 30min</span>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Módulo RH</span>
-                        <h3 class="trn-card__title">Folha de Pagamento e eSocial</h3>
-                        <p class="trn-card__desc">Configure a folha de pagamento e envie eventos do eSocial.</p>
-                        <button class="trn-card__btn">
-                            Iniciar curso
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="trn-card">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #0984e3, #74b9ff);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        <span class="trn-card__duration">1h 45min</span>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Avançado</span>
-                        <h3 class="trn-card__title">Dashboards e Indicadores com BI</h3>
-                        <p class="trn-card__desc">Crie dashboards inteligentes para tomada de decisão estratégica.</p>
-                        <button class="trn-card__btn">
-                            Iniciar curso
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="trn-card">
-                    <div class="trn-card__thumb" style="background: linear-gradient(135deg, #E17055, #FDCB6E);">
-                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 10 3.17V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.604.852.997 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                        <span class="trn-card__duration">3h 00min</span>
-                    </div>
-                    <div class="trn-card__body">
-                        <span class="trn-card__category">Administração</span>
-                        <h3 class="trn-card__title">Configurações Avançadas do Sistema</h3>
-                        <p class="trn-card__desc">Permissões de usuários, integrações e parametrizações avançadas.</p>
-                        <button class="trn-card__btn">
-                            Iniciar curso
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
+        </div><!-- .chat-panel -->
+    </div><!-- .chat-widget -->
 
     <div class="toast" id="toast"></div>
     <script src="js/pages-app.js"></script>
+    <script src="js/treinamentos.js"></script>
+    <script src="js/chat-suporte.js"></script>
 </body>
 </html>
