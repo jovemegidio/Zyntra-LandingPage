@@ -1064,23 +1064,40 @@ input:-webkit-autofill:focus {
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 480px) {
+    .login-content {
+        margin: 0 12px;
+    }
+
     .glass-card {
-        padding: 1.5rem 1.25rem;
+        padding: 1.5rem 1.125rem;
         border-radius: 0.875rem;
     }
 
     .login-greeting {
-        font-size: 1.25rem;
+        font-size: 1.2rem;
+    }
+
+    .login-subtitle {
+        font-size: 0.8125rem;
     }
 
     .avatar-box {
-        width: 64px;
-        height: 64px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .avatar-box .avatar-icon svg {
+        width: 32px;
+        height: 32px;
     }
 
     .login-logo {
-        max-width: 160px;
-        max-height: 48px;
+        max-width: 150px;
+        max-height: 44px;
+    }
+
+    .login-header {
+        margin-bottom: 1.5rem;
     }
 
     .form-input {
@@ -1089,12 +1106,41 @@ input:-webkit-autofill:focus {
     }
 
     .login-submit-btn {
-        height: 44px;
+        height: 46px;
         font-size: 0.9375rem;
     }
 
+    .modal-content {
+        width: 95%;
+        padding: 1.5rem 1.25rem;
+        border-radius: 1rem;
+    }
+
+    .modal-buttons {
+        flex-direction: column;
+    }
+
     .theme-dots {
-        bottom: 16px;
+        bottom: 12px;
+    }
+}
+
+@media (max-width: 360px) {
+    .login-content {
+        margin: 0 8px;
+    }
+
+    .glass-card {
+        padding: 1.25rem 1rem;
+    }
+
+    .login-greeting {
+        font-size: 1.1rem;
+    }
+
+    .avatar-box {
+        width: 54px;
+        height: 54px;
     }
 }
 

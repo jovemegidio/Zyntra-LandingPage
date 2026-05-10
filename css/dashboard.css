@@ -1057,12 +1057,12 @@ button { font-family: var(--font); cursor: pointer; }
     }
 
     .dash-main {
-        padding: 24px 16px 40px;
+        padding: 20px 16px 40px;
     }
 
     .dash-topbar {
         flex-direction: column;
-        gap: 16px;
+        gap: 12px;
     }
 
     .dash-topbar__actions {
@@ -1083,21 +1083,54 @@ button { font-family: var(--font); cursor: pointer; }
 
     .dash-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 12px;
     }
 
     .dash-stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
 
     .dash-topbar__left h1 {
         font-size: 18px;
     }
+
+    .promo-banner {
+        min-height: 180px;
+    }
+
+    .settings-dropdown {
+        right: auto;
+        left: 0;
+        min-width: 200px;
+        max-width: calc(100vw - 32px);
+    }
+
+    .user-dropdown {
+        right: 0;
+        width: min(220px, calc(100vw - 24px));
+    }
 }
 
 @media (max-width: 480px) {
+    .dash-nav__inner {
+        padding: 0 12px;
+    }
+
     .dash-nav__user-name {
         display: none;
+    }
+
+    .dash-main {
+        padding: 16px 12px 32px;
+    }
+
+    .dash-topbar__left h1 {
+        font-size: 17px;
+    }
+
+    .dash-topbar__left p {
+        font-size: 12px;
     }
 
     .dash-topbar__actions {
@@ -1107,6 +1140,58 @@ button { font-family: var(--font); cursor: pointer; }
     .btn-dash {
         width: 100%;
         justify-content: center;
+        padding: 9px 16px;
+    }
+
+    .dash-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 12px;
+    }
+
+    .stat-card__icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .dash-grid {
+        gap: 10px;
+    }
+
+    .company-card__btn {
+        padding: 11px;
+        font-size: 13px;
+        min-height: 44px;
+    }
+
+    .promo-banner {
+        min-height: 160px;
+    }
+
+    .promo-banner__title {
+        font-size: 15px;
+    }
+
+    .toast {
+        bottom: 16px;
+        right: 12px;
+        left: 12px;
+        justify-content: center;
+    }
+
+    .dash-controls__label {
+        display: none;
+    }
+
+    .dash-toolbar__divider {
+        display: none;
+    }
+
+    .settings-dropdown {
+        right: auto;
+        left: 0;
     }
 }
 

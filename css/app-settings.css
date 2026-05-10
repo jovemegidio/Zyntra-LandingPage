@@ -658,11 +658,140 @@
 
 /* ========== RESPONSIVE ========== */
 @media (max-width: 768px) {
-    .app-header__inner { padding: 0 16px; }
-    .app-company { padding: 20px 16px 0; flex-direction: column; }
-    .app-tabs { padding: 12px 16px 0; }
-    .app-main { padding: 20px 16px 40px; }
-    .seg-schedule-grid { grid-template-columns: 60px repeat(24, 1fr); font-size: 8px; }
-    .grupo-perm-item { min-width: 150px; }
-    .terms-content { padding: 20px; }
+    .app-header__inner {
+        padding: 0 16px;
+        gap: 10px;
+    }
+
+    .app-page-badge {
+        font-size: 12px;
+        padding: 6px 14px;
+    }
+
+    .app-company {
+        padding: 16px 16px 0;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .app-company__name {
+        font-size: 18px;
+    }
+
+    .app-company__logo {
+        width: 48px;
+        height: 48px;
+    }
+
+    .app-tabs {
+        padding: 12px 16px 0;
+        gap: 2px;
+    }
+
+    .app-tabs__item {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .app-main {
+        padding: 20px 16px 40px;
+    }
+
+    /* Schedule grid — scrollable on mobile */
+    .seg-schedule {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .seg-schedule-grid {
+        grid-template-columns: 56px repeat(24, minmax(28px, 1fr));
+        min-width: 700px;
+        font-size: 8px;
+    }
+
+    .grupo-perm-item {
+        min-width: calc(50% - 4px);
+    }
+
+    .terms-content {
+        padding: 20px;
+        font-size: 12.5px;
+    }
+
+    .seg-section {
+        padding: 16px;
+    }
+
+    .app-api-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .app-api-row strong {
+        min-width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header__inner {
+        padding: 0 12px;
+    }
+
+    .app-back-btn span {
+        display: none;
+    }
+
+    .app-back-btn {
+        padding: 8px 12px;
+    }
+
+    .app-company {
+        padding: 14px 12px 0;
+    }
+
+    .app-company__name {
+        font-size: 16px;
+    }
+
+    .app-tabs {
+        padding: 10px 12px 0;
+    }
+
+    .app-tabs__item {
+        padding: 8px 10px;
+        font-size: 11.5px;
+    }
+
+    .app-main {
+        padding: 16px 12px 32px;
+    }
+
+    .grupo-perm-item {
+        min-width: 100%;
+    }
+
+    .terms-content {
+        padding: 16px;
+        font-size: 12px;
+    }
+
+    .app-section__title h2 {
+        font-size: 13.5px;
+    }
+
+    .grupo-card__name {
+        font-size: 13px;
+    }
+
+    .grupo-card__header {
+        padding: 12px;
+    }
+
+    .grupo-card__body {
+        padding: 12px;
+    }
+
+    .seg-section {
+        padding: 14px 12px;
+    }
 }
