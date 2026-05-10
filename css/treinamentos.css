@@ -1866,6 +1866,57 @@
     font-size: 9.5px;
 }
 
+/* ========== CHAT TRANSFER CARD ========== */
+.chat-transfer-card {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: rgba(108,92,231,0.08);
+  border: 1px solid rgba(108,92,231,0.2);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-transfer-card p {
+  font-size: 12.5px;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.chat-transfer-card strong { color: #f1f5f9; }
+
+.chat-transfer-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chat-transfer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 13px;
+  border: none;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: var(--transition);
+  background: var(--primary);
+  color: white;
+}
+
+.chat-transfer-btn:hover { background: var(--primary-dark); }
+
+.chat-transfer-btn--cancel {
+  background: rgba(255,255,255,0.06);
+  color: #64748b;
+}
+
+.chat-transfer-btn--cancel:hover { background: rgba(255,255,255,0.1); color: #94a3b8; }
+
 /* ========== RESPONSIVE ========== */
 @media (max-width: 1024px) {
     .trn-stats-row { grid-template-columns: repeat(2, 1fr); }

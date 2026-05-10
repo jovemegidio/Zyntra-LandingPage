@@ -201,8 +201,28 @@ let state = {
   userName: 'Usuário',
 };
 
+/* ── Admin Content Override (salvo pelo painel admin) ─── */
+function loadAdminContent() {
+  try {
+    const overrides = JSON.parse(localStorage.getItem('zyntra_admin_content') || '{}');
+    courseData.forEach(cat => {
+      cat.lessons.forEach(l => {
+        const o = overrides[l.id];
+        if (!o) return;
+        if (o.videoId    !== undefined) l.videoId    = o.videoId;
+        if (o.title)                    l.title      = o.title;
+        if (o.description)              l.description = o.description;
+        if (o.duration)                 l.duration   = o.duration;
+      });
+    });
+  } catch (_) {}
+}
+
 /* ── Init ────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  // Aplicar conteúdo publicado pelo admin (sobrescreve padrões)
+  loadAdminContent();
+
   // Pegar userName do localStorage (definido por pages-app.js)
   try {
     const u = JSON.parse(localStorage.getItem('zyntra_user') || '{}');

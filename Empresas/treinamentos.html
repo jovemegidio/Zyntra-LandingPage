@@ -333,21 +333,21 @@
 
                 <div class="chat-sidebar__body">
 
-                    <!-- Zyntra IA -->
+                    <!-- Zai I.A. -->
                     <div class="chat-sidebar__section-label">Assistente</div>
-                    <button class="chat-sidebar__bob" id="navBob" data-channel="bob">
+                    <button class="chat-sidebar__bob active" id="navBob" data-channel="bob">
                         <div class="chat-sidebar__bob-avatar">
                             IA
                             <div class="chat-sidebar__bob-sparkle">★</div>
                         </div>
                         <div class="chat-sidebar__bob-info">
-                            <span>Zyntra IA</span>
+                            <span>Zai I.A.</span>
                             <small>Assistente Virtual</small>
                         </div>
                         <span class="chat-sidebar__bob-badge">Beta</span>
                     </button>
 
-                    <!-- Channels -->
+                    <!-- Canais de dúvidas (visíveis sempre) -->
                     <div class="chat-sidebar__section-header">
                         <button class="chat-sidebar__section-toggle">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
@@ -355,39 +355,54 @@
                         </button>
                     </div>
                     <ul class="chat-sidebar__list">
-                        <li><button class="chat-sidebar__item active" data-channel="suporte">
-                            <span class="chat-sidebar__hash">#</span>
-                            suporte-geral
-                            <span class="chat-sidebar__unread" id="unread-suporte">1</span>
-                        </button></li>
-                        <li><button class="chat-sidebar__item" data-channel="tecnico">
-                            <span class="chat-sidebar__hash">#</span>
-                            problemas-técnicos
-                        </button></li>
-                        <li><button class="chat-sidebar__item" data-channel="financeiro">
-                            <span class="chat-sidebar__hash">#</span>
-                            financeiro
-                        </button></li>
                         <li><button class="chat-sidebar__item" data-channel="duvidas">
                             <span class="chat-sidebar__hash">#</span>
                             dúvidas-sistema
                         </button></li>
                     </ul>
 
-                    <!-- Direct Messages -->
-                    <div class="chat-sidebar__section-header">
-                        <button class="chat-sidebar__section-toggle">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
-                            Mensagens diretas
-                        </button>
+                    <!-- Suporte humano — oculto até Zai I.A. transferir -->
+                    <div id="chatSupportSection" style="display:none;">
+                        <div class="chat-sidebar__section-header">
+                            <button class="chat-sidebar__section-toggle">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+                                Suporte humano
+                            </button>
+                        </div>
+                        <ul class="chat-sidebar__list">
+                            <li><button class="chat-sidebar__item" data-channel="suporte">
+                                <span class="chat-sidebar__hash">#</span>
+                                suporte-geral
+                                <span class="chat-sidebar__unread" id="unread-suporte" style="display:none;">1</span>
+                            </button></li>
+                            <li><button class="chat-sidebar__item" data-channel="tecnico">
+                                <span class="chat-sidebar__hash">#</span>
+                                problemas-técnicos
+                            </button></li>
+                            <li><button class="chat-sidebar__item" data-channel="financeiro">
+                                <span class="chat-sidebar__hash">#</span>
+                                financeiro
+                            </button></li>
+                        </ul>
                     </div>
-                    <ul class="chat-sidebar__list">
-                        <li><button class="chat-sidebar__item" data-channel="dm-suporte">
-                            <div class="chat-sidebar__dm-avatar">SZ</div>
-                            Suporte Zyntra
-                            <span class="chat-sidebar__status online"></span>
-                        </button></li>
-                    </ul>
+
+                    <!-- Direct Messages — oculto até transferência -->
+                    <div id="chatDmSection" style="display:none;">
+                        <div class="chat-sidebar__section-header">
+                            <button class="chat-sidebar__section-toggle">
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 9l6 6 6-6"/></svg>
+                                Mensagens diretas
+                            </button>
+                        </div>
+                        <ul class="chat-sidebar__list">
+                            <li><button class="chat-sidebar__item" data-channel="dm-suporte">
+                                <div class="chat-sidebar__dm-avatar">SZ</div>
+                                Suporte Zyntra
+                                <span class="chat-sidebar__unread" id="unread-dm-suporte" style="display:none;">1</span>
+                                <span class="chat-sidebar__status online"></span>
+                            </button></li>
+                        </ul>
+                    </div>
 
                 </div>
 
@@ -407,8 +422,8 @@
                     <div class="chat-main__header-left">
                         <span class="chat-main__channel-icon" id="chatChannelIcon">#</span>
                         <div>
-                            <div class="chat-main__channel-name" id="chatChannelName">suporte-geral</div>
-                            <div class="chat-main__channel-desc" id="chatChannelDesc">Canal de suporte geral da Zyntra</div>
+                            <div class="chat-main__channel-name" id="chatChannelName">Zai I.A.</div>
+                            <div class="chat-main__channel-desc" id="chatChannelDesc">Assistente virtual — responde dúvidas do sistema 24h</div>
                         </div>
                     </div>
                     <div class="chat-main__header-right">
@@ -429,7 +444,7 @@
                         <textarea
                             class="chat-input__textarea"
                             id="chatInputArea"
-                            placeholder="Mensagem em #suporte-geral"
+                            placeholder="Mensagem para Zai I.A."
                             rows="1"
                         ></textarea>
                         <div class="chat-input__actions">

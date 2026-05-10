@@ -1,6 +1,7 @@
 /* ============================================================
    Zyntra — Chat de Suporte (visual Teams)
-   Widget flutuante com sidebar + Zyntra IA auto-resposta
+   Widget flutuante com sidebar + Zai I.A. auto-resposta
+   Suporte humano disponível somente após transferência
    ============================================================ */
 
 /* ── Dados dos canais ────────────────────────────────── */
@@ -10,7 +11,7 @@ const chatChannels = {
     desc: 'Canal de suporte geral da Zyntra',
     icon: '#',
     messages: [
-      { id: 'sys-1', author: 'Equipe Zyntra', initials: 'ZN', role: 'Suporte', time: formatTime(new Date()), isAI: true,
+      { id: 'sys-1', author: 'Equipe Zyntra', initials: 'SZ', role: 'Suporte', time: formatTime(new Date()), isAI: true,
         text: 'Bem-vindo ao suporte Zyntra! 👋 Estamos aqui para ajudar. Como podemos te ajudar hoje?' },
     ]
   },
@@ -19,7 +20,7 @@ const chatChannels = {
     desc: 'Reporte erros e problemas técnicos do sistema',
     icon: '#',
     messages: [
-      { id: 'sys-2', author: 'Equipe Zyntra', initials: 'ZN', role: 'Suporte Técnico', time: formatTime(new Date()), isAI: true,
+      { id: 'sys-2', author: 'Equipe Zyntra', initials: 'SZ', role: 'Suporte Técnico', time: formatTime(new Date()), isAI: true,
         text: 'Canal de suporte técnico. Para agilizar o atendimento, descreva: 1) O que estava fazendo, 2) O erro que apareceu, 3) Seu navegador e sistema operacional.' },
     ]
   },
@@ -28,7 +29,7 @@ const chatChannels = {
     desc: 'Dúvidas sobre planos, cobranças e faturas',
     icon: '#',
     messages: [
-      { id: 'sys-3', author: 'Equipe Zyntra', initials: 'ZN', role: 'Financeiro', time: formatTime(new Date()), isAI: true,
+      { id: 'sys-3', author: 'Equipe Zyntra', initials: 'SZ', role: 'Financeiro', time: formatTime(new Date()), isAI: true,
         text: 'Canal financeiro. Para dúvidas sobre planos, faturas ou upgrades, fale com a gente!' },
     ]
   },
@@ -37,17 +38,17 @@ const chatChannels = {
     desc: 'Perguntas gerais sobre como usar o Zyntra ERP',
     icon: '#',
     messages: [
-      { id: 'sys-4', author: 'Zyntra IA', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
-        text: 'Olá! Sou a Zyntra IA, sua assistente virtual. Faça sua dúvida sobre o sistema Zyntra e farei o possível para ajudar!' },
+      { id: 'sys-4', author: 'Zai I.A.', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
+        text: 'Olá! Sou a Zai I.A., sua assistente virtual. Faça sua dúvida sobre o sistema Zyntra e farei o possível para ajudar!' },
     ]
   },
   bob: {
-    name: 'Zyntra IA',
+    name: 'Zai I.A.',
     desc: 'Assistente virtual — responde dúvidas do sistema 24h',
     icon: '★',
     messages: [
-      { id: 'bob-1', author: 'Zyntra IA', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
-        text: 'Olá! Sou a **Zyntra IA**, sua assistente virtual. Posso te ajudar com dúvidas sobre NF-e, financeiro, estoque, vendas e muito mais. O que você precisa?' },
+      { id: 'bob-1', author: 'Zai I.A.', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
+        text: 'Olá! Sou a **Zai I.A.**, sua assistente virtual. Posso te ajudar com dúvidas sobre NF-e, financeiro, estoque, vendas e muito mais. O que você precisa?' },
     ]
   },
   'dm-suporte': {
@@ -61,9 +62,9 @@ const chatChannels = {
   },
 };
 
-/* ── Respostas da Zyntra IA ──────────────────────────── */
+/* ── Respostas da Zai I.A. ───────────────────────────── */
 const bobResponses = {
-  nf: 'Para emitir NF-e no Zyntra: acesse **Módulo Fiscal → NF-e → Nova Nota**. Preencha os dados do destinatário, produtos e impostos. Se tiver dificuldade, confira o tutorial "Emissão de Notas Fiscais" na seção Treinamentos.',
+  nf: 'Para emitir NF-e no Zyntra: acesse **Módulo Fiscal → NF-e → Nova Nota**. Preencha os dados do destinatário, produtos e impostos. Se tiver dificuldade, confira o tutorial "Emissão de Notas Fiscais" nos Treinamentos.',
   fiscal: 'Para dúvidas fiscais (NF-e, NFS-e, impostos): acesse **Módulo Fiscal** no painel da sua empresa. Se quiser aprender do zero, recomendo o tutorial "Módulo Fiscal" nos seus Treinamentos.',
   financeiro: 'O **Módulo Financeiro** do Zyntra cobre: contas a pagar/receber, fluxo de caixa, conciliação bancária e DRE. Acesse a partir do painel da empresa → Financeiro.',
   estoque: 'Para controlar estoque: vá em **Módulo de Estoque → Produtos** para cadastrar, e **Movimentações** para entradas e saídas. O inventário físico fica em Estoque → Inventário.',
@@ -72,18 +73,20 @@ const bobResponses = {
   integracoes: 'O Zyntra integra com: WhatsApp Business, bancos (OFX/extrato), emissão fiscal, eSocial e marketplaces. As configurações ficam em **Configurações → Integrações**.',
   usuario: 'Para gerenciar usuários: acesse **Configurações → Gerenciar Usuários**. Lá você pode criar, editar permissões e desativar acessos.',
   default: [
-    'Entendi sua dúvida! Deixa eu verificar... 🤔 Para uma resposta mais detalhada, recomendo abrir um chamado no canal **#suporte-geral** ou acessar o tutorial correspondente em **Meus Treinamentos**.',
-    'Boa pergunta! Essa funcionalidade está no módulo correspondente do seu painel Zyntra. Se quiser, posso te guiar pelo tutorial passo a passo na seção **Treinamentos**.',
-    'Para isso você precisará acessar as configurações do módulo correspondente. Nossa equipe de suporte pode te ajudar com mais detalhes — use o canal **#suporte-geral**.',
-    'Vou registrar sua dúvida! Nossa equipe de suporte entrará em contato pelo seu e-mail cadastrado em até 2 horas úteis. Posso te ajudar com mais alguma coisa?',
+    'Entendi! Vou verificar essa informação para você. 🤔 Caso eu não consiga resolver, posso te conectar com nosso time de suporte humano.',
+    'Boa pergunta! Essa funcionalidade está no módulo correspondente do painel Zyntra. Posso te guiar pelo tutorial passo a passo nos **Treinamentos**.',
+    'Vou registrar sua dúvida! Se precisar de uma resposta mais detalhada, posso transferir você para nosso suporte humano.',
+    'Hmm, não tenho certeza sobre esse caso específico. Que tal falar com um de nossos especialistas de suporte? Posso te transferir agora.',
   ],
 };
 
 /* ── Estado ──────────────────────────────────────────── */
 let chatState = {
-  activeChannel: 'suporte',
+  activeChannel: 'bob',     // Inicia direto na Zai I.A.
   open: false,
   msgCounter: 100,
+  supportUnlocked: false,   // Canais de suporte humano bloqueados até transferência
+  defaultReplies: 0,        // Conta respostas padrão (sem match) para gatilho de transferência
 };
 
 /* ── Init ────────────────────────────────────────────── */
@@ -115,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   input?.addEventListener('input', () => {
     send.disabled = !input.value.trim();
-    // Auto-resize
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 100) + 'px';
   });
@@ -126,8 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   send?.addEventListener('click', chatSend);
 
-  // Renderizar canal inicial
-  renderChatMessages('suporte');
+  // Marcar Zai I.A. como ativo na sidebar
+  const bobBtn = document.getElementById('navBob');
+  if (bobBtn) bobBtn.classList.add('active');
+
+  // Renderizar canal inicial (Zai I.A.)
+  renderChatMessages('bob');
+  updatePlaceholder('bob');
 });
 
 /* ── Toggle widget ───────────────────────────────────── */
@@ -162,16 +169,13 @@ function chatSelectChannel(channelId, btn) {
 
   chatState.activeChannel = channelId;
 
-  // UI: remover active de todos
   document.querySelectorAll('.chat-sidebar__item, .chat-sidebar__bob').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
 
-  // Unread: esconder badge do canal ativado
   const unread = document.getElementById(`unread-${channelId}`);
   if (unread) unread.style.display = 'none';
 
-  // Header
-  const ch = chatChannels[channelId];
+  const ch    = chatChannels[channelId];
   const isBob = channelId === 'bob';
   const isDM  = channelId === 'dm-suporte';
 
@@ -184,11 +188,17 @@ function chatSelectChannel(channelId, btn) {
     iconEl.style.color = isBob ? '#a78bfa' : '';
   }
 
-  // Placeholder do input
-  const input = document.getElementById('chatInputArea');
-  if (input) input.placeholder = `Mensagem ${isBob ? 'para Zyntra IA' : isDM ? 'para Suporte Zyntra' : 'em #' + ch.name}`;
-
+  updatePlaceholder(channelId);
   renderChatMessages(channelId);
+}
+
+function updatePlaceholder(channelId) {
+  const input = document.getElementById('chatInputArea');
+  if (!input) return;
+  const ch = chatChannels[channelId];
+  const isBob = channelId === 'bob';
+  const isDM  = channelId === 'dm-suporte';
+  input.placeholder = `Mensagem ${isBob ? 'para Zai I.A.' : isDM ? 'para Suporte Zyntra' : 'em #' + (ch?.name || channelId)}`;
 }
 
 /* ── Renderizar mensagens ────────────────────────────── */
@@ -201,11 +211,10 @@ function renderChatMessages(channelId) {
 
   const msgs = ch.messages;
 
-  // Welcome card para canal ativo
   const welcomeHtml = `
     <div class="chat-welcome">
       <div class="chat-welcome__icon">${channelId === 'bob' ? '🤖' : channelId === 'dm-suporte' ? '💬' : '💡'}</div>
-      <h4>${channelId === 'bob' ? 'Zyntra IA — Assistente Virtual' : 'Bem-vindo ao canal #' + ch.name}</h4>
+      <h4>${channelId === 'bob' ? 'Zai I.A. — Assistente Virtual' : 'Bem-vindo ao canal #' + ch.name}</h4>
       <p>${ch.desc}</p>
     </div>
     <div class="chat-date-divider">Hoje</div>`;
@@ -217,8 +226,8 @@ function renderChatMessages(channelId) {
 }
 
 function buildMessageHtml(msg, prev) {
-  const grouped = prev && prev.author === msg.author;
-  const avatarClass = msg.isBob ? 'ai' : '';
+  const grouped = prev && prev.author === msg.author && !msg.isTransferOffer;
+  const avatarClass  = msg.isBob ? 'ai' : '';
   const avatarHidden = grouped ? 'hidden' : '';
   const authorClass  = msg.isBob ? 'ai-label' : '';
   const headerHtml   = grouped ? '' : `
@@ -231,11 +240,26 @@ function buildMessageHtml(msg, prev) {
   const textFormatted = escHtml(msg.text).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
   const ownClass = msg.isOwn ? 'own' : '';
 
+  const transferCardHtml = msg.isTransferOffer ? `
+    <div class="chat-transfer-card">
+      <p>Gostaria de ser transferido para um <strong>atendente humano</strong> do nosso suporte?</p>
+      <div class="chat-transfer-actions">
+        <button class="chat-transfer-btn" onclick="chatTransferToSupport(this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.96a16 16 0 0 0 6.29 6.29l1.02-.94a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Sim, transferir para suporte
+        </button>
+        <button class="chat-transfer-btn chat-transfer-btn--cancel" onclick="this.closest('.chat-transfer-card').style.display='none'">
+          Continuar com Zai I.A.
+        </button>
+      </div>
+    </div>` : '';
+
   return `<div class="chat-msg ${ownClass}">
     <div class="chat-msg__avatar ${avatarClass} ${avatarHidden}">${msg.initials}</div>
     <div class="chat-msg__body">
       ${headerHtml}
       <div class="chat-msg__text">${textFormatted}</div>
+      ${transferCardHtml}
     </div>
   </div>`;
 }
@@ -250,7 +274,6 @@ function chatSend() {
   const ch        = chatChannels[channelId];
   if (!ch) return;
 
-  // Pegar nome do usuário
   let userName = 'Você';
   let userInitial = 'V';
   try {
@@ -259,7 +282,6 @@ function chatSend() {
     userInitial = (userName[0] || 'V').toUpperCase();
   } catch (_) {}
 
-  // Adicionar mensagem do usuário
   const userMsg = {
     id: 'msg-' + (++chatState.msgCounter),
     author: userName,
@@ -272,19 +294,14 @@ function chatSend() {
 
   ch.messages.push(userMsg);
 
-  // Limpar input
   if (input) { input.value = ''; input.style.height = 'auto'; }
   const send = document.getElementById('chatSendBtn');
   if (send) send.disabled = true;
 
   renderChatMessages(channelId);
 
-  // Auto-resposta do BOB / Equipe
   const delay = 1200 + Math.random() * 800;
-
-  // Mostrar typing indicator
   setTimeout(() => showTyping(channelId), 400);
-
   setTimeout(() => {
     hideTyping();
     const reply = buildReply(text, channelId);
@@ -297,9 +314,8 @@ function showTyping(channelId) {
   const container = document.getElementById('chatMessages');
   if (!container) return;
 
-  const ch     = chatChannels[channelId];
   const isBot  = channelId === 'bob' || channelId === 'duvidas';
-  const author = isBot ? 'Zyntra IA' : 'Suporte Zyntra';
+  const author = isBot ? 'Zai I.A.' : 'Suporte Zyntra';
 
   const typing = document.createElement('div');
   typing.id = 'chatTyping';
@@ -322,14 +338,21 @@ function hideTyping() {
 }
 
 function buildReply(userText, channelId) {
-  const lc     = userText.toLowerCase();
-  const isBot  = channelId === 'bob' || channelId === 'duvidas';
+  const lc    = userText.toLowerCase();
+  const isBot = channelId === 'bob' || channelId === 'duvidas';
+
+  // Detectar pedido de suporte humano explícito
+  const wantsHuman = lc.includes('suporte') || lc.includes('atendente') || lc.includes('humano') ||
+                     lc.includes('falar com') || lc.includes('quero falar') || lc.includes('transferir');
 
   let text;
+  let isTransferOffer = false;
 
   if (isBot) {
-    // Zyntra IA — respostas temáticas
-    if (lc.includes('nf') || lc.includes('nota fiscal')) {
+    if (wantsHuman && !chatState.supportUnlocked) {
+      text = 'Claro! Posso te conectar com nosso time de suporte humano. Eles estão disponíveis em horário comercial.';
+      isTransferOffer = true;
+    } else if (lc.includes('nf') || lc.includes('nota fiscal')) {
       text = bobResponses.nf;
     } else if (lc.includes('fiscal') || lc.includes('imposto') || lc.includes('nfse')) {
       text = bobResponses.fiscal;
@@ -348,33 +371,90 @@ function buildReply(userText, channelId) {
     } else {
       const arr = bobResponses.default;
       text = arr[Math.floor(Math.random() * arr.length)];
+      chatState.defaultReplies++;
+      // Oferecer transferência após 1 resposta padrão
+      if (chatState.defaultReplies >= 1 && !chatState.supportUnlocked) {
+        isTransferOffer = true;
+      }
     }
   } else if (channelId === 'financeiro') {
     text = 'Recebemos sua mensagem sobre o plano financeiro! Nossa equipe de vendas entrará em contato em até 1 hora útil pelo e-mail cadastrado.';
   } else if (channelId === 'tecnico') {
-    text = 'Ticket de suporte técnico registrado! ✅ Um especialista analisará seu caso e responderá em até 2 horas úteis. Número do ticket: **#TKT-' + Math.floor(10000 + Math.random() * 90000) + '**';
+    text = 'Ticket de suporte técnico registrado! ✅ Um especialista analisará seu caso em até 2 horas úteis. Número do ticket: **#TKT-' + Math.floor(10000 + Math.random() * 90000) + '**';
   } else {
-    // suporte geral e dm
     const replies = [
       'Mensagem recebida! Nossa equipe de suporte analisará e responderá em breve. ✅',
       'Entendido! Estamos verificando sua solicitação e retornaremos pelo e-mail cadastrado em breve.',
-      'Obrigado pelo contato! Para questões urgentes, ligue para nosso suporte: (11) 92090-6946.',
+      'Obrigado pelo contato! Para questões urgentes, ligue: **(11) 92090-6946**.',
       'Registramos sua solicitação! Alguém do time de suporte entrará em contato em até 2 horas úteis.',
     ];
     text = replies[Math.floor(Math.random() * replies.length)];
   }
 
-  const isBob = isBot;
   return {
     id: 'reply-' + (++chatState.msgCounter),
-    author: isBob ? 'Zyntra IA' : 'Suporte Zyntra',
-    initials: isBob ? 'ZN' : 'SZ',
-    role: isBob ? 'Assistente Virtual' : 'Suporte',
+    author: isBot ? 'Zai I.A.' : 'Suporte Zyntra',
+    initials: isBot ? 'ZN' : 'SZ',
+    role: isBot ? 'Assistente Virtual' : 'Suporte',
     time: formatTime(new Date()),
     text,
     isAI: true,
-    isBob,
+    isBob: isBot,
+    isTransferOffer,
   };
+}
+
+/* ── Transferência para suporte humano ───────────────── */
+function chatTransferToSupport(btn) {
+  if (chatState.supportUnlocked) return;
+  chatState.supportUnlocked = true;
+
+  // Desabilitar botão clicado
+  if (btn) {
+    btn.closest('.chat-transfer-card').innerHTML = '<p style="color:#64748b;font-size:12px;">⏳ Conectando com o suporte...</p>';
+  }
+
+  // Revelar seções de suporte humano na sidebar
+  const supportSection = document.getElementById('chatSupportSection');
+  const dmSection      = document.getElementById('chatDmSection');
+  if (supportSection) supportSection.style.display = '';
+  if (dmSection)      dmSection.style.display = '';
+
+  // Mensagem de transferência da Zai I.A.
+  const ch = chatChannels[chatState.activeChannel];
+  ch.messages.push({
+    id: 'transfer-' + (++chatState.msgCounter),
+    author: 'Zai I.A.',
+    initials: 'ZN',
+    role: 'Assistente Virtual',
+    time: formatTime(new Date()),
+    text: 'Perfeito! Estou te conectando com nosso time de suporte humano. Aguarde um momento... ⏳',
+    isAI: true,
+    isBob: true,
+  });
+  renderChatMessages(chatState.activeChannel);
+
+  // Após 2s: mudar para dm-suporte com mensagem de boas-vindas
+  setTimeout(() => {
+    const ticketNum = Math.floor(10000 + Math.random() * 90000);
+    chatChannels['dm-suporte'].messages.push({
+      id: 'dm-transfer-' + (++chatState.msgCounter),
+      author: 'Suporte Zyntra',
+      initials: 'SZ',
+      role: 'Atendimento',
+      time: formatTime(new Date()),
+      text: `Olá! Fui notificado pela **Zai I.A.** sobre sua solicitação. Um agente especializado estará com você em breve. Número do chamado: **#TKT-${ticketNum}**`,
+      isAI: true,
+    });
+
+    // Mostrar badge no dm-suporte
+    const badge = document.getElementById('unread-dm-suporte');
+    if (badge) badge.style.display = 'flex';
+
+    // Trocar para o canal dm-suporte
+    const dmBtn = document.querySelector('[data-channel="dm-suporte"]');
+    chatSelectChannel('dm-suporte', dmBtn);
+  }, 2000);
 }
 
 /* ── Helpers ─────────────────────────────────────────── */
