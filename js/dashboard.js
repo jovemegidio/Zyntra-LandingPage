@@ -440,6 +440,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+    // ========== USER DROPDOWN ACTIONS ==========
+    document.getElementById('btnMinhaConta')?.addEventListener('click', () => {
+        userDropdown.classList.remove('open');
+        window.location.href = 'Empresas/gerenciar-usuarios.html';
+    });
+
+    document.getElementById('btnConfiguracoes')?.addEventListener('click', () => {
+        userDropdown.classList.remove('open');
+        window.location.href = 'Empresas/seguranca.html';
+    });
+
+    document.getElementById('btnAjudaSuporte')?.addEventListener('click', () => {
+        userDropdown.classList.remove('open');
+        window.location.href = 'Empresas/treinamentos.html';
+    });
+
     // ========== LOGOUT ==========
     const btnLogout = document.getElementById('btnLogout');
     if (btnLogout) {
@@ -624,9 +640,8 @@ function acessarEmpresa(companyId) {
 
     window.showToast(`Acessando ERP da empresa ${companyId.toUpperCase()}...`);
 
-    // Redirect to 404 page (ERP panels under construction)
     setTimeout(() => {
-        window.location.href = '404.html';
+        window.location.href = companyRoutes[companyId] || '404.html';
     }, 1500);
 }
 
