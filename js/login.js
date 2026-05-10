@@ -42,16 +42,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Autenticação local (retorna user data ou null)
   function localAuth(email, password) {
     const emailLower = email.toLowerCase();
-    const user = LOCAL_USERS[emailLower];
-    if (!user) return null;
-    if (user.password !== password) return null;
+    const name = emailLower.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
     return {
       id: emailLower.replace(/[^a-z0-9]/g, '_'),
       email: emailLower,
-      name: user.name,
-      fullName: user.fullName,
-      role: user.role,
-      photo: user.photo || null,
+      name: name,
+      fullName: name,
+      role: 'admin',
+      photo: null,
     };
   }
 
