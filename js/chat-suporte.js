@@ -1,6 +1,6 @@
 /* ============================================================
    Zyntra — Chat de Suporte (visual Teams)
-   Widget flutuante com sidebar + BOB I.A. auto-resposta
+   Widget flutuante com sidebar + Zyntra IA auto-resposta
    ============================================================ */
 
 /* ── Dados dos canais ────────────────────────────────── */
@@ -37,17 +37,17 @@ const chatChannels = {
     desc: 'Perguntas gerais sobre como usar o Zyntra ERP',
     icon: '#',
     messages: [
-      { id: 'sys-4', author: 'BOB I.A.', initials: 'IA', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
-        text: 'Olá! Sou o BOB I.A., seu assistente virtual. Faça sua dúvida sobre o sistema Zyntra e farei o possível para ajudar!' },
+      { id: 'sys-4', author: 'Zyntra IA', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
+        text: 'Olá! Sou a Zyntra IA, sua assistente virtual. Faça sua dúvida sobre o sistema Zyntra e farei o possível para ajudar!' },
     ]
   },
   bob: {
-    name: 'BOB I.A.',
+    name: 'Zyntra IA',
     desc: 'Assistente virtual — responde dúvidas do sistema 24h',
     icon: '★',
     messages: [
-      { id: 'bob-1', author: 'BOB I.A.', initials: 'IA', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
-        text: 'Olá! Sou o **BOB**, assistente virtual da Zyntra. Posso te ajudar com dúvidas sobre NF-e, financeiro, estoque, vendas e muito mais. O que você precisa?' },
+      { id: 'bob-1', author: 'Zyntra IA', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
+        text: 'Olá! Sou a **Zyntra IA**, sua assistente virtual. Posso te ajudar com dúvidas sobre NF-e, financeiro, estoque, vendas e muito mais. O que você precisa?' },
     ]
   },
   'dm-suporte': {
@@ -61,7 +61,7 @@ const chatChannels = {
   },
 };
 
-/* ── Respostas do BOB I.A. ───────────────────────────── */
+/* ── Respostas da Zyntra IA ──────────────────────────── */
 const bobResponses = {
   nf: 'Para emitir NF-e no Zyntra: acesse **Módulo Fiscal → NF-e → Nova Nota**. Preencha os dados do destinatário, produtos e impostos. Se tiver dificuldade, confira o tutorial "Emissão de Notas Fiscais" na seção Treinamentos.',
   fiscal: 'Para dúvidas fiscais (NF-e, NFS-e, impostos): acesse **Módulo Fiscal** no painel da sua empresa. Se quiser aprender do zero, recomendo o tutorial "Módulo Fiscal" nos seus Treinamentos.',
@@ -186,7 +186,7 @@ function chatSelectChannel(channelId, btn) {
 
   // Placeholder do input
   const input = document.getElementById('chatInputArea');
-  if (input) input.placeholder = `Mensagem ${isBob ? 'para BOB I.A.' : isDM ? 'para Suporte Zyntra' : 'em #' + ch.name}`;
+  if (input) input.placeholder = `Mensagem ${isBob ? 'para Zyntra IA' : isDM ? 'para Suporte Zyntra' : 'em #' + ch.name}`;
 
   renderChatMessages(channelId);
 }
@@ -205,7 +205,7 @@ function renderChatMessages(channelId) {
   const welcomeHtml = `
     <div class="chat-welcome">
       <div class="chat-welcome__icon">${channelId === 'bob' ? '🤖' : channelId === 'dm-suporte' ? '💬' : '💡'}</div>
-      <h4>${channelId === 'bob' ? 'BOB I.A. — Assistente Virtual' : 'Bem-vindo ao canal #' + ch.name}</h4>
+      <h4>${channelId === 'bob' ? 'Zyntra IA — Assistente Virtual' : 'Bem-vindo ao canal #' + ch.name}</h4>
       <p>${ch.desc}</p>
     </div>
     <div class="chat-date-divider">Hoje</div>`;
@@ -299,7 +299,7 @@ function showTyping(channelId) {
 
   const ch     = chatChannels[channelId];
   const isBot  = channelId === 'bob' || channelId === 'duvidas';
-  const author = isBot ? 'BOB I.A.' : 'Suporte Zyntra';
+  const author = isBot ? 'Zyntra IA' : 'Suporte Zyntra';
 
   const typing = document.createElement('div');
   typing.id = 'chatTyping';
@@ -328,7 +328,7 @@ function buildReply(userText, channelId) {
   let text;
 
   if (isBot) {
-    // BOB I.A. — respostas temáticas
+    // Zyntra IA — respostas temáticas
     if (lc.includes('nf') || lc.includes('nota fiscal')) {
       text = bobResponses.nf;
     } else if (lc.includes('fiscal') || lc.includes('imposto') || lc.includes('nfse')) {
@@ -367,8 +367,8 @@ function buildReply(userText, channelId) {
   const isBob = isBot;
   return {
     id: 'reply-' + (++chatState.msgCounter),
-    author: isBob ? 'BOB I.A.' : 'Suporte Zyntra',
-    initials: isBob ? 'IA' : 'SZ',
+    author: isBob ? 'Zyntra IA' : 'Suporte Zyntra',
+    initials: isBob ? 'ZN' : 'SZ',
     role: isBob ? 'Assistente Virtual' : 'Suporte',
     time: formatTime(new Date()),
     text,

@@ -11,80 +11,184 @@
    3. Cole o ID no campo videoId da aula correspondente abaixo
    ------------------------------------------------------------------ */
 const courseData = [
+  // ── Categorias espelhando o help center: aluforce.api.br/ajuda ──
   {
-    id: 'cat-inicio',
-    title: 'Primeiros Passos',
+    id: 'cat-guia',
+    title: 'Guia Inicial Zyntra',
     color: '#6C5CE7',
     lessons: [
-      { id: 'l-inicio-1', title: 'Configuração inicial do sistema', duration: '18min', videoId: '', description: 'Visão geral do Zyntra ERP, primeiras configurações de empresa, usuários e preferências do sistema.', completed: true },
-      { id: 'l-inicio-2', title: 'Integração com WhatsApp', duration: '12min', videoId: '', description: 'Configure o WhatsApp Business para envio de notas, cobranças e notificações automáticas.', completed: true },
-      { id: 'l-inicio-3', title: 'Atualizações e novidades do produto', duration: '8min', videoId: '', description: 'Saiba como acompanhar as atualizações e aproveitar os novos recursos do sistema.', completed: false },
+      { id: 'l-guia-1', title: 'Visão geral e primeiros passos', duration: '18min', videoId: '', description: 'Conheça a interface do Zyntra ERP, configure sua empresa e entenda a navegação principal.', completed: true },
+      { id: 'l-guia-2', title: 'Configuração inicial da empresa', duration: '14min', videoId: '', description: 'Preencha os dados fiscais da empresa, logotipo, endereço e parâmetros gerais.', completed: true },
+      { id: 'l-guia-3', title: 'Criação e gestão de usuários', duration: '10min', videoId: '', description: 'Crie logins, defina perfis de acesso e controle o que cada colaborador pode fazer no sistema.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-whatsapp',
+    title: 'Zyntra ERP no WhatsApp',
+    color: '#25D366',
+    lessons: [
+      { id: 'l-wpp-1', title: 'Configurando o WhatsApp Business', duration: '12min', videoId: '', description: 'Conecte o WhatsApp Business ao Zyntra para envio automático de notas, cobranças e confirmações.', completed: true },
+      { id: 'l-wpp-2', title: 'Envio de NF-e e boletos pelo WhatsApp', duration: '9min', videoId: '', description: 'Configure o envio automático de documentos fiscais e cobranças diretamente para o cliente.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-novidades',
+    title: 'Novidades de Produto',
+    color: '#A29BFE',
+    lessons: [
+      { id: 'l-nov-1', title: 'Atualizações recentes do sistema', duration: '8min', videoId: '', description: 'Conheça as últimas funcionalidades lançadas e como aproveitá-las no seu dia a dia.', completed: false },
+      { id: 'l-nov-2', title: 'Roadmap e próximas novidades', duration: '6min', videoId: '', description: 'Veja o que está por vir no Zyntra ERP e como se preparar para os novos recursos.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-seguranca',
+    title: 'Zyntra Segurança',
+    color: '#E17055',
+    lessons: [
+      { id: 'l-seg-1', title: 'Permissões e grupos de acesso', duration: '15min', videoId: '', description: 'Configure grupos de acesso, restrições por módulo e auditoria de ações dos usuários.', completed: false },
+      { id: 'l-seg-2', title: 'Autenticação em dois fatores (2FA)', duration: '8min', videoId: '', description: 'Ative o 2FA para proteger os acessos da sua equipe ao sistema.', completed: false },
+      { id: 'l-seg-3', title: 'Backup e proteção de dados', duration: '10min', videoId: '', description: 'Entenda como o Zyntra realiza backups automáticos e garante a segurança dos seus dados.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-app',
+    title: 'App Zyntra',
+    color: '#0984e3',
+    lessons: [
+      { id: 'l-app-1', title: 'Instalando e navegando no app', duration: '10min', videoId: '', description: 'Baixe o app Zyntra para Android/iOS, faça login e conheça as funcionalidades móveis.', completed: false },
+      { id: 'l-app-2', title: 'Emissão de NF-e pelo celular', duration: '12min', videoId: '', description: 'Emita notas fiscais diretamente pelo aplicativo, em qualquer lugar.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-portal',
+    title: 'Portal Zyntra',
+    color: '#00cec9',
+    lessons: [
+      { id: 'l-por-1', title: 'Portal do cliente — visão geral', duration: '11min', videoId: '', description: 'Veja como o Portal Zyntra permite que seus clientes acompanhem pedidos, faturas e documentos.', completed: false },
+      { id: 'l-por-2', title: 'Configurando o portal para seus clientes', duration: '14min', videoId: '', description: 'Personalize o portal, defina acessos e ative notificações automáticas para clientes.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-cenarios',
+    title: 'Cenários de Negócio',
+    color: '#fd79a8',
+    lessons: [
+      { id: 'l-cen-1', title: 'Fluxo completo de venda ao recebimento', duration: '22min', videoId: '', description: 'Siga o ciclo completo: orçamento → pedido → NF-e → boleto → baixa financeira.', completed: false },
+      { id: 'l-cen-2', title: 'Gestão de uma loja de varejo', duration: '18min', videoId: '', description: 'Configure o Zyntra para o varejo: PDV, estoque, promoções e relatórios de vendas.', completed: false },
+      { id: 'l-cen-3', title: 'Controle para prestadores de serviços', duration: '16min', videoId: '', description: 'Use o Zyntra para gerenciar contratos, OS, NFS-e e receitas de serviços.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-cadastros',
+    title: 'Cadastros',
+    color: '#636e72',
+    lessons: [
+      { id: 'l-cad-1', title: 'Clientes e fornecedores', duration: '20min', videoId: '', description: 'Cadastre clientes e fornecedores com todos os dados fiscais, contatos e condições comerciais.', completed: true },
+      { id: 'l-cad-2', title: 'Produtos e serviços', duration: '18min', videoId: '', description: 'Cadastre produtos com NCM, CEST, tributação e variantes. Gerencie serviços e tabelas de preços.', completed: true },
+      { id: 'l-cad-3', title: 'Transportadoras e tabelas de frete', duration: '12min', videoId: '', description: 'Cadastre transportadoras, tabelas de frete e vincule ao processo de venda ou compra.', completed: false },
     ]
   },
   {
     id: 'cat-vendas',
-    title: 'Módulo de Vendas',
+    title: 'Vendas',
     color: '#00B894',
     lessons: [
-      { id: 'l-vendas-1', title: 'Cadastro de clientes e fornecedores', duration: '22min', videoId: '', description: 'Aprenda a cadastrar clientes e fornecedores, campos obrigatórios e importação de cadastros.', completed: true },
-      { id: 'l-vendas-2', title: 'Emissão de pedidos e orçamentos', duration: '35min', videoId: '', description: 'Crie pedidos de venda, envie orçamentos e acompanhe o status de cada negociação.', completed: false, inProgress: true, progress: 50 },
-      { id: 'l-vendas-3', title: 'Gestão de comissões e metas', duration: '20min', videoId: '', description: 'Configure comissões por vendedor ou produto e gere relatórios de desempenho.', completed: false },
-    ]
-  },
-  {
-    id: 'cat-financeiro',
-    title: 'Módulo Financeiro',
-    color: '#0984e3',
-    lessons: [
-      { id: 'l-fin-1', title: 'Contas a Pagar e a Receber', duration: '40min', videoId: '', description: 'Controle contas, gere boletos, realize baixas e acompanhe o fluxo de caixa.', completed: false, inProgress: true, progress: 65 },
-      { id: 'l-fin-2', title: 'Conciliação bancária', duration: '28min', videoId: '', description: 'Importe extratos OFX e reconcilie automaticamente suas transações bancárias.', completed: false },
-      { id: 'l-fin-3', title: 'Relatórios financeiros e DRE', duration: '32min', videoId: '', description: 'Gere relatórios de fluxo de caixa, DRE e balanço patrimonial.', completed: false },
-    ]
-  },
-  {
-    id: 'cat-estoque',
-    title: 'Módulo de Estoque',
-    color: '#E17055',
-    lessons: [
-      { id: 'l-est-1', title: 'Cadastro e categorização de produtos', duration: '25min', videoId: '', description: 'Cadastre produtos, defina categorias, unidades de medida e variantes.', completed: true },
-      { id: 'l-est-2', title: 'Movimentações e inventário', duration: '30min', videoId: '', description: 'Realize entradas, saídas, transferências e inventário físico do estoque.', completed: false, inProgress: true, progress: 30 },
-    ]
-  },
-  {
-    id: 'cat-fiscal',
-    title: 'Módulo Fiscal',
-    color: '#00cec9',
-    lessons: [
-      { id: 'l-fisc-1', title: 'Emissão de Notas Fiscais (NF-e)', duration: '45min', videoId: '', description: 'Guia completo para emissão, cancelamento e inutilização de NF-e.', completed: false },
-      { id: 'l-fisc-2', title: 'NFS-e Nacional e serviços', duration: '35min', videoId: '', description: 'Emita notas de serviço conforme o padrão NFS-e Nacional atualizado.', completed: false },
-      { id: 'l-fisc-3', title: 'Desconto de duplicatas', duration: '18min', videoId: '', description: 'Entenda como funciona o desconto de duplicatas e integre com sua financeira.', completed: false },
-    ]
-  },
-  {
-    id: 'cat-rh',
-    title: 'Módulo de RH',
-    color: '#fd79a8',
-    lessons: [
-      { id: 'l-rh-1', title: 'Folha de Pagamento e eSocial', duration: '50min', videoId: '', description: 'Configure a folha de pagamento e envie os eventos do eSocial ao governo.', completed: false },
-      { id: 'l-rh-2', title: 'Controle de ponto e horas extras', duration: '22min', videoId: '', description: 'Configure o controle de ponto, calcule horas extras e banco de horas.', completed: false },
+      { id: 'l-vnd-1', title: 'Pedidos de venda e orçamentos', duration: '28min', videoId: '', description: 'Crie pedidos, envie orçamentos, controle aprovações e gere NF-e a partir do pedido.', completed: false, inProgress: true, progress: 50 },
+      { id: 'l-vnd-2', title: 'Gestão de comissões', duration: '16min', videoId: '', description: 'Configure comissões por vendedor, produto ou faixa de valor e emita relatórios.', completed: false },
+      { id: 'l-vnd-3', title: 'PDV e caixa', duration: '20min', videoId: '', description: 'Use o módulo de PDV para vendas balcão, controle de caixa e emissão de NFC-e.', completed: false },
     ]
   },
   {
     id: 'cat-compras',
-    title: 'Módulo de Compras',
+    title: 'Compras',
     color: '#FDCB6E',
     lessons: [
-      { id: 'l-comp-1', title: 'Pedidos de compra e cotações', duration: '28min', videoId: '', description: 'Crie pedidos de compra, compare cotações e aprove solicitações de compra.', completed: false },
-      { id: 'l-comp-2', title: 'Gestão de fornecedores', duration: '20min', videoId: '', description: 'Cadastre e avalie fornecedores, negocie condições e controle contratos.', completed: false },
+      { id: 'l-cmp-1', title: 'Pedidos de compra e cotações', duration: '22min', videoId: '', description: 'Crie pedidos de compra, compare cotações de fornecedores e controle aprovações.', completed: false },
+      { id: 'l-cmp-2', title: 'Entrada de mercadorias (XML NF-e)', duration: '18min', videoId: '', description: 'Importe XML de NF-e do fornecedor para dar entrada automática no estoque.', completed: false },
     ]
   },
   {
-    id: 'cat-bi',
-    title: 'Dashboards e BI',
+    id: 'cat-financas',
+    title: 'Finanças',
+    color: '#0984e3',
+    lessons: [
+      { id: 'l-fin-1', title: 'Contas a Pagar e a Receber', duration: '35min', videoId: '', description: 'Controle vencimentos, baixas, parcelamentos e gere cobranças por boleto ou Pix.', completed: false, inProgress: true, progress: 65 },
+      { id: 'l-fin-2', title: 'Fluxo de caixa e conciliação bancária', duration: '25min', videoId: '', description: 'Acompanhe o fluxo de caixa em tempo real e importe extratos OFX para conciliação.', completed: false },
+      { id: 'l-fin-3', title: 'Desconto de duplicatas', duration: '14min', videoId: '', description: 'Entenda e configure o desconto de duplicatas integrado à sua instituição financeira.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-estoque',
+    title: 'Estoque',
+    color: '#E17055',
+    lessons: [
+      { id: 'l-est-1', title: 'Movimentações de estoque', duration: '22min', videoId: '', description: 'Realize entradas, saídas, transferências entre depósitos e ajustes de estoque.', completed: true },
+      { id: 'l-est-2', title: 'Inventário físico', duration: '16min', videoId: '', description: 'Realize o inventário físico, compare com o sistema e ajuste as divergências.', completed: false, inProgress: true, progress: 30 },
+      { id: 'l-est-3', title: 'Lotes, séries e validade', duration: '14min', videoId: '', description: 'Controle lotes, números de série e datas de validade nos movimentos de estoque.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-nfe',
+    title: 'Notas Fiscais',
+    color: '#00cec9',
+    lessons: [
+      { id: 'l-nfe-1', title: 'Emissão de NF-e (produto)', duration: '40min', videoId: '', description: 'Guia completo: emita, transmita, cancele e inutilize NF-e com o Zyntra.', completed: false },
+      { id: 'l-nfe-2', title: 'Migração para NFS-e Nacional', duration: '30min', videoId: '', description: 'Adapte seu processo de emissão de notas de serviço ao novo padrão NFS-e Nacional.', completed: false },
+      { id: 'l-nfe-3', title: 'NFC-e e CT-e', duration: '20min', videoId: '', description: 'Emita notas fiscais de consumidor (NFC-e) e conhecimentos de transporte (CT-e).', completed: false },
+    ]
+  },
+  {
+    id: 'cat-contabil',
+    title: 'Contabilidade',
+    color: '#636e72',
+    lessons: [
+      { id: 'l-cnt-1', title: 'Plano de contas e DRE', duration: '28min', videoId: '', description: 'Configure o plano de contas, centre de custos e gere demonstrativo de resultado (DRE).', completed: false },
+      { id: 'l-cnt-2', title: 'Integração com o contador', duration: '14min', videoId: '', description: 'Exporte lançamentos contábeis e relatórios para seu escritório de contabilidade.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-relatorios',
+    title: 'Relatórios',
     color: '#A29BFE',
     lessons: [
-      { id: 'l-bi-1', title: 'Dashboards e indicadores de desempenho', duration: '35min', videoId: '', description: 'Crie dashboards inteligentes para tomada de decisão estratégica.', completed: false },
-      { id: 'l-bi-2', title: 'Relatórios avançados e exportações', duration: '25min', videoId: '', description: 'Gere e exporte relatórios avançados em PDF, Excel e outros formatos.', completed: false },
+      { id: 'l-rel-1', title: 'Dashboards e indicadores de desempenho', duration: '22min', videoId: '', description: 'Crie painéis visuais com os principais KPIs do negócio para tomada de decisão.', completed: false },
+      { id: 'l-rel-2', title: 'Relatórios personalizados e exportações', duration: '18min', videoId: '', description: 'Gere relatórios por módulo e exporte em PDF, Excel e CSV conforme a necessidade.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-pcp',
+    title: 'PCP',
+    color: '#6C5CE7',
+    lessons: [
+      { id: 'l-pcp-1', title: 'Ordens de produção', duration: '25min', videoId: '', description: 'Crie e gerencie ordens de produção, controle insumos e acompanhe o progresso.', completed: false },
+      { id: 'l-pcp-2', title: 'Gestão de insumos e ficha técnica', duration: '18min', videoId: '', description: 'Cadastre fichas técnicas de produtos, controle consumo de matéria-prima e custos.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-rh',
+    title: 'Recursos Humanos',
+    color: '#fd79a8',
+    lessons: [
+      { id: 'l-rh-1', title: 'Folha de Pagamento e eSocial', duration: '45min', videoId: '', description: 'Configure a folha de pagamento e envie os eventos obrigatórios do eSocial ao governo.', completed: false },
+      { id: 'l-rh-2', title: 'Controle de ponto e horas extras', duration: '20min', videoId: '', description: 'Registre ponto, calcule horas extras, banco de horas e faltas automaticamente.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-faturamento',
+    title: 'Faturamento',
+    color: '#00B894',
+    lessons: [
+      { id: 'l-fat-1', title: 'Contratos e faturamento recorrente', duration: '22min', videoId: '', description: 'Gerencie contratos de prestação de serviço e automatize o faturamento mensal.', completed: false },
+      { id: 'l-fat-2', title: 'Régua de cobrança automática', duration: '14min', videoId: '', description: 'Configure lembretes e cobranças automáticas por e-mail, WhatsApp ou SMS.', completed: false },
+    ]
+  },
+  {
+    id: 'cat-logistica',
+    title: 'Logística',
+    color: '#FDCB6E',
+    lessons: [
+      { id: 'l-log-1', title: 'Rastreamento de pedidos e entregas', duration: '18min', videoId: '', description: 'Acompanhe o status de entrega dos pedidos e integre com transportadoras parceiras.', completed: false },
+      { id: 'l-log-2', title: 'CT-e e MDF-e', duration: '16min', videoId: '', description: 'Emita conhecimentos de transporte eletrônico (CT-e) e manifesto de documentos (MDF-e).', completed: false },
     ]
   },
 ];
