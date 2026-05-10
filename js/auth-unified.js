@@ -53,6 +53,7 @@
         window.location.protocol === 'file:' ||
         window.location.hostname === '127.0.0.1' ||
         window.location.hostname === 'localhost' ||
+        window.location.hostname.endsWith('github.io') ||
         window.location.port === '5500' ||
         window.location.port === '5501' ||
         window.location.port === '3000'
