@@ -44,7 +44,7 @@ const chatChannels = {
   },
   bob: {
     name: 'Zai I.A.',
-    desc: 'Assistente virtual — responde dúvidas do sistema 24h',
+    desc: 'Mais de 2.000 empresas já usam o Zyntra ERP',
     icon: '★',
     messages: [
       { id: 'bob-1', author: 'Zai I.A.', initials: 'ZN', role: 'Assistente Virtual', time: formatTime(new Date()), isAI: true, isBob: true,
@@ -213,7 +213,11 @@ function renderChatMessages(channelId) {
 
   const welcomeHtml = `
     <div class="chat-welcome">
-      <div class="chat-welcome__icon">${channelId === 'bob' ? '🤖' : channelId === 'dm-suporte' ? '💬' : '💡'}</div>
+      <div class="chat-welcome__icon ${channelId === 'bob' ? 'chat-welcome__icon--nai' : ''}">
+        ${channelId === 'bob'
+          ? '<img src="Nai.jpg" alt="Zai I.A.">'
+          : channelId === 'dm-suporte' ? '💬' : '💡'}
+      </div>
       <h4>${channelId === 'bob' ? 'Zai I.A. — Assistente Virtual' : 'Bem-vindo ao canal #' + ch.name}</h4>
       <p>${ch.desc}</p>
     </div>
